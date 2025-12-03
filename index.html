@@ -19,7 +19,7 @@
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], bengali: ['Hind Siliguri', 'sans-serif'] },
                     animation: { 
                         'blob': 'blob 10s infinite alternate', 
-                        'float-heavy': 'floatHeavy 4s ease-in-out infinite', /* জোরে দুলবে */
+                        'float-heavy': 'floatHeavy 4s ease-in-out infinite',
                         'pulse-neon': 'pulseNeon 1.5s infinite',
                         'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards'
                     },
@@ -37,7 +37,7 @@
     <style>
         body { background-color: #020617; color: white; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* --- BACKGROUND ANIMATION (HEAVY) --- */
+        /* --- BACKGROUND ANIMATION --- */
         .nebula-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -2; background: #020617; }
         .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; will-change: transform; }
         .blob-1 { top: -10%; left: -20%; width: 80vw; height: 80vw; background: #059669; animation: blob 12s infinite alternate; }
@@ -78,7 +78,6 @@
         .modal-content { transform: scale(0.8) translateY(50px); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .modal.show .modal-content { transform: scale(1) translateY(0); }
         
-        /* Copy Toast */
         .copy-toast { position: absolute; inset: 0; background: rgba(16, 185, 129, 0.95); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; opacity: 0; pointer-events: none; transition: opacity 0.3s; border-radius: 12px; }
         .copy-toast.show { opacity: 1; }
     </style>
@@ -91,29 +90,24 @@
     </div>
     <div class="grid-overlay"></div>
 
-    <!-- FIXED MARQUEE -->
+    <!-- DYNAMIC MARQUEE -->
     <div class="marquee-wrapper shadow-lg">
         <div class="marquee-content" id="dynamicMarquee">
-            <div class="marquee-item"><i class="fas fa-bullhorn text-yellow-300 animate-pulse"></i> খোরদ, গৌরিহ্রদ, ভাংবাড়ীয়া এলাকায় বাফারলেস ইন্টারনেট!</div>
-            <div class="marquee-item"><i class="fas fa-phone-alt text-yellow-300"></i> হটলাইন: 01931-706655</div>
-            <!-- Loop -->
-            <div class="marquee-item"><i class="fas fa-bullhorn text-yellow-300 animate-pulse"></i> খোরদ, গৌরিহ্রদ, ভাংবাড়ীয়া এলাকায় বাফারলেস ইন্টারনেট!</div>
-            <div class="marquee-item"><i class="fas fa-phone-alt text-yellow-300"></i> হটলাইন: 01931-706655</div>
+            <!-- Content will be injected via JS -->
         </div>
     </div>
 
-    <!-- NAVBAR (FIXED LAYOUT - NO OVERLAP) -->
+    <!-- NAVBAR -->
     <nav class="sticky top-0 z-40 glass !bg-isp-dark/80 !border-b !border-white/10 !rounded-none backdrop-blur-xl animate-slide-up">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-18 py-2">
                 
-                <!-- BRAND (Flexible Space) -->
+                <!-- BRAND -->
                 <div class="flex items-center gap-2 flex-1 min-w-0">
                     <div class="bg-white p-1 rounded-xl shadow-lg shrink-0 animate-float-heavy">
                         <img src="https://payment.udoyadn.com/DefaultImages/Udoy_Logo.jpg" alt="Logo" class="h-7 w-auto object-contain">
                     </div>
                     <div class="flex flex-col justify-center overflow-hidden">
-                        <!-- Truncate added to prevent overlap -->
                         <span class="text-lg md:text-2xl font-black text-white leading-none tracking-tight truncate">Rasheduzzaman</span>
                         <div class="mt-0.5">
                             <div class="inline-flex items-center gap-1 bg-isp-green/10 px-2 py-0.5 rounded-full border border-isp-green/20">
@@ -124,12 +118,12 @@
                     </div>
                 </div>
 
-                <!-- BUTTONS (Fixed Shrink) -->
+                <!-- BUTTONS -->
                 <div class="flex items-center gap-2 shrink-0 ml-2">
-                    <a href="tel:+8801931706655" class="bg-white/10 hover:bg-white/20 text-white w-9 h-9 flex items-center justify-center rounded-full border border-white/20 transition-all active:scale-75 shadow-lg shadow-white/10 animate-float-heavy" style="animation-delay: 1s;">
+                    <a id="navCallBtn" href="#" class="bg-white/10 hover:bg-white/20 text-white w-9 h-9 flex items-center justify-center rounded-full border border-white/20 transition-all active:scale-75 shadow-lg shadow-white/10 animate-float-heavy" style="animation-delay: 1s;">
                          <i class="fas fa-phone-alt text-sm"></i>
                     </a>
-                    <a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20নতুন%20ইন্টারনেট%20সংযোগ%20সম্পর্কে%20জানতে%20চাই।" class="btn-shine bg-gradient-to-r from-green-600 to-green-500 text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 font-bold shadow-lg shadow-green-500/50 text-xs active:scale-90 transition-transform">
+                    <a id="navWhatsAppBtn" href="#" target="_blank" class="btn-shine bg-gradient-to-r from-green-600 to-green-500 text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 font-bold shadow-lg shadow-green-500/50 text-xs active:scale-90 transition-transform">
                         <i class="fab fa-whatsapp text-base"></i>
                         <span>WhatsApp</span>
                     </a>
@@ -138,7 +132,7 @@
         </div>
     </nav>
 
-    <!-- HERO SECTION (HEAVY ANIMATION) -->
+    <!-- HERO SECTION -->
     <section class="relative pt-14 pb-10 z-10 px-4">
         <div class="max-w-7xl mx-auto text-center">
             <div class="reveal inline-block px-4 py-1.5 rounded-full border border-isp-green/30 bg-isp-green/10 text-isp-green text-[10px] md:text-xs font-bold uppercase tracking-wider mb-4 backdrop-blur-md shadow-lg shadow-green-500/10 animate-float-heavy">
@@ -158,7 +152,8 @@
                 <a href="#packages" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-isp-orange to-red-600 text-white font-extrabold text-lg shadow-xl shadow-orange-500/40 active:scale-95 transition-transform hover:-translate-y-2 animate-float-heavy" style="animation-delay: 0.5s;">
                     প্যাকেজ দেখুন <i class="fas fa-arrow-right ml-2"></i>
                 </a>
-                <a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20আপনাদের%20সাথে%20কথা%20বলতে%20চাই।" class="px-8 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-lg backdrop-blur-md active:scale-95 transition-transform flex items-center justify-center gap-2 hover:border-white/30 animate-float-heavy" style="animation-delay: 1s;">
+                <!-- Generic Message Button -->
+                <a id="heroMsgBtn" href="#" target="_blank" class="px-8 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-lg backdrop-blur-md active:scale-95 transition-transform flex items-center justify-center gap-2 hover:border-white/30 animate-float-heavy" style="animation-delay: 1s;">
                     <i class="far fa-comment-dots"></i> মেসেজ দিন
                 </a>
             </div>
@@ -166,7 +161,7 @@
     </section>
 
     <!-- NOTICE BOARD -->
-    <section class="py-6 z-10 relative px-4">
+    <section class="py-6 z-10 relative px-4" id="noticeSection">
         <div class="max-w-3xl mx-auto reveal">
             <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 flex items-start gap-3 backdrop-blur-md shadow-lg hover:shadow-yellow-500/20 transition-shadow">
                 <div class="bg-yellow-500/20 p-2 rounded-full text-yellow-500 shrink-0 animate-pulse">
@@ -254,7 +249,7 @@
         </div>
     </section>
 
-    <!-- PACKAGES SECTION (SCROLL FIXED & MESSAGES) -->
+    <!-- PACKAGES SECTION -->
     <section id="packages" class="py-12 relative z-10 px-4">
         <div class="max-w-4xl mx-auto reveal">
             <div class="flex items-center justify-center gap-4 mb-8">
@@ -263,33 +258,12 @@
                 <div class="h-px w-12 bg-gradient-to-l from-transparent to-isp-orange"></div>
             </div>
 
-            <!-- FEATURED -->
-            <div class="grid md:grid-cols-2 gap-6 mb-8">
-                <div class="glass border border-isp-gold/40 rounded-3xl p-6 relative overflow-hidden group bg-gradient-to-br from-isp-gold/5 to-transparent hover:shadow-lg hover:shadow-isp-gold/10 transition-all animate-float-heavy">
-                    <div class="absolute top-0 right-0 bg-isp-gold text-black text-[10px] font-extrabold px-3 py-1 rounded-bl-xl uppercase tracking-wider shadow-lg">Streaming</div>
-                    <div class="relative z-10">
-                        <h3 class="text-isp-gold font-black text-2xl mb-1">Padma Plus</h3>
-                        <div class="flex items-baseline mb-4"><span class="text-5xl font-black text-white">28</span> <span class="text-sm text-gray-400 ml-1 font-bold">Mbps</span></div>
-                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
-                            <span class="text-2xl font-black text-white">৳525</span>
-                            <a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Padma%20Plus%20(28%20Mbps)%20-%20525tk%20প্যাকেজটি%20নিতে%20আগ্রহী।" class="bg-isp-gold text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-white transition-colors shadow-lg active:scale-95 transform">Order</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="glass border border-isp-orange/40 rounded-3xl p-6 relative overflow-hidden group bg-gradient-to-br from-isp-orange/5 to-transparent hover:shadow-lg hover:shadow-isp-orange/10 transition-all animate-float-heavy" style="animation-delay: 2s;">
-                    <div class="absolute top-0 right-0 bg-isp-orange text-black text-[10px] font-extrabold px-3 py-1 rounded-bl-xl uppercase tracking-wider shadow-lg">Gaming</div>
-                    <div class="relative z-10">
-                        <h3 class="text-isp-orange font-black text-2xl mb-1">Teesta Plus</h3>
-                        <div class="flex items-baseline mb-4"><span class="text-5xl font-black text-white">57</span> <span class="text-sm text-gray-400 ml-1 font-bold">Mbps</span></div>
-                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
-                            <span class="text-2xl font-black text-white">৳1050</span>
-                            <a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Teesta%20Plus%20(57%20Mbps)%20-%201050tk%20প্যাকেজটি%20নিতে%20আগ্রহী।" class="bg-isp-orange text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-white transition-colors shadow-lg active:scale-95 transform">Order</a>
-                        </div>
-                    </div>
-                </div>
+            <!-- FEATURED (Dynamic) -->
+            <div id="featuredPackages" class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Injected via JS -->
             </div>
 
-            <!-- REGULAR LIST (Scroll Fix) -->
+            <!-- REGULAR LIST (Dynamic) -->
             <div id="packageTableContainer" class="glass rounded-3xl overflow-hidden border border-white/10">
                 <div class="bg-white/5 px-5 py-4 flex justify-between text-[10px] uppercase tracking-widest text-gray-400 font-bold border-b border-white/5">
                     <div class="w-[35%]">Package</div>
@@ -301,23 +275,8 @@
                 <!-- Hidden List -->
                 <div id="morePackagesWrapper" class="expand-wrapper">
                     <div class="expand-inner">
-                        <div class="divide-y divide-white/5 px-0 font-medium text-sm text-white bg-black/20">
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Padma</div><div class="text-center text-isp-green w-[25%] font-bold">25 Mbps</div><div class="text-center w-[20%] font-bold">৳500</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Padma%20(25%20Mbps)%20-%20500tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Meghna</div><div class="text-center text-isp-green w-[25%] font-bold">30 Mbps</div><div class="text-center w-[20%] font-bold">৳620</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Meghna%20(30%20Mbps)%20-%20620tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Meghna Plus</div><div class="text-center text-isp-green w-[25%] font-bold">32 Mbps</div><div class="text-center w-[20%] font-bold">৳651</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Meghna%20Plus%20(32%20Mbps)%20-%20651tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Jamuna</div><div class="text-center text-isp-green w-[25%] font-bold">35 Mbps</div><div class="text-center w-[20%] font-bold">৳700</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Jamuna%20(35%20Mbps)%20-%20700tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Surma</div><div class="text-center text-isp-green w-[25%] font-bold">40 Mbps</div><div class="text-center w-[20%] font-bold">৳800</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Surma%20(40%20Mbps)%20-%20800tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Surma Plus</div><div class="text-center text-isp-green w-[25%] font-bold">45 Mbps</div><div class="text-center w-[20%] font-bold">৳840</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Surma%20Plus%20(45%20Mbps)%20-%20840tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Kirtankhola</div><div class="text-center text-isp-green w-[25%] font-bold">50 Mbps</div><div class="text-center w-[20%] font-bold">৳900</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Kirtankhola%20(50%20Mbps)%20-%20900tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">EDC Project</div><div class="text-center text-isp-green w-[25%] font-bold">60 Mbps</div><div class="text-center w-[20%] font-bold">৳1000</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20EDC%20Project%20(60%20Mbps)%20-%201000tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Teesta</div><div class="text-center text-isp-green w-[25%] font-bold">55 Mbps</div><div class="text-center w-[20%] font-bold">৳1000</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Teesta%20(55%20Mbps)%20-%201000tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Karnaphuly</div><div class="text-center text-isp-green w-[25%] font-bold">60 Mbps</div><div class="text-center w-[20%] font-bold">৳1200</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Karnaphuly%20(60%20Mbps)%20-%201200tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Karnaphuly Plus</div><div class="text-center text-isp-green w-[25%] font-bold">62 Mbps</div><div class="text-center w-[20%] font-bold">৳1260</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Karnaphuly%20Plus%20(62%20Mbps)%20-%201260tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Karatoya</div><div class="text-center text-isp-green w-[25%] font-bold">65 Mbps</div><div class="text-center w-[20%] font-bold">৳1300</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Karatoya%20(65%20Mbps)%20-%201300tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Titas</div><div class="text-center text-isp-green w-[25%] font-bold">70 Mbps</div><div class="text-center w-[20%] font-bold">৳1500</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Titas%20(70%20Mbps)%20-%201500tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Madhumoti</div><div class="text-center text-isp-green w-[25%] font-bold">75 Mbps</div><div class="text-center w-[20%] font-bold">৳1600</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Madhumoti%20(75%20Mbps)%20-%201600tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Rupsha</div><div class="text-center text-isp-green w-[25%] font-bold">80 Mbps</div><div class="text-center w-[20%] font-bold">৳1750</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Rupsha%20(80%20Mbps)%20-%201750tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
-                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Brahmaputra</div><div class="text-center text-isp-green w-[25%] font-bold">85 Mbps</div><div class="text-center w-[20%] font-bold">৳2000</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Brahmaputra%20(85%20Mbps)%20-%202000tk%20প্যাকেজটি%20নিতে%20চাই।" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                        <div id="regularPackageList" class="divide-y divide-white/5 px-0 font-medium text-sm text-white bg-black/20">
+                            <!-- Injected via JS -->
                         </div>
                     </div>
                 </div>
@@ -336,7 +295,7 @@
     <footer class="bg-black/50 pt-10 pb-6 border-t border-white/5 text-center relative z-10 backdrop-blur-md">
         <div class="mb-4 flex justify-center gap-4">
             <a href="https://www.facebook.com/share/1CsSTaWj94/" target="_blank" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://wa.me/8801931706655" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-green-500 hover:text-white transition-colors"><i class="fab fa-whatsapp"></i></a>
+            <a id="footerWaBtn" href="#" target="_blank" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-green-500 hover:text-white transition-colors"><i class="fab fa-whatsapp"></i></a>
         </div>
         <p class="text-[10px] text-gray-600 font-medium tracking-wide">
             &copy; 2025 Rasheduzzaman ISP.<br>
@@ -361,7 +320,7 @@
                 <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center mb-5 cursor-pointer active:bg-white/10 hover:border-green-500/50 transition-all group relative overflow-hidden" onclick="copyNumber()">
                     <p class="text-[10px] text-gray-400 mb-1 uppercase tracking-widest group-hover:text-white">বিকাশ পার্সোনাল (কপি করতে ক্লিক করুন)</p>
                     <div class="flex items-center justify-center gap-3">
-                        <p class="text-2xl font-black text-white tracking-widest">01915815671</p>
+                        <p class="text-2xl font-black text-white tracking-widest" id="bkashNumberDisplay">...</p>
                         <i class="far fa-copy text-green-500 group-hover:scale-110 transition-transform"></i>
                     </div>
                     <div id="copyFeedback" class="copy-toast">নাম্বারটি কপি হয়েছে!</div>
@@ -381,37 +340,155 @@
         </div>
     </div>
 
-    <!-- SCRIPTS -->
-    <script src="data.js"></script> 
+    <!-- MAIN SCRIPT (EDIT DATA HERE) -->
     <script>
+        /* ================================================================
+           ⚡⚡ SITE CONFIGURATION (DATA.JS) - EDIT THIS SECTION ⚡⚡
+        ================================================================
+        */
+        const siteConfig = {
+            // ১. যোগাযোগ নাম্বার
+            contact: {
+                phone: "01931706655",       // কলের জন্য
+                whatsapp: "8801931706655",  // হোয়াটস্যাপ এর জন্য (৮৮ সহ)
+                bkash: "01915815671",       // বিল পে বিকাশ নাম্বার
+                
+                // Hero এবং Navbar বাটনে ক্লিক করলে এই মেসেজ যাবে
+                genericMsg: "আসসালামু আলাইকুম, আমি আপনাদের সার্ভিস সম্পর্কে বিস্তারিত জানতে চাই।"
+            },
+
+            // ২. স্ক্রলিং টেক্সট (Marquee)
+            marqueeText: "খোরদ, গৌরিহ্রদ, ভাংবাড়ীয়া এলাকায় বাফারলেস ইন্টারনেট!",
+
+            // ৩. নোটিশ বোর্ড (খালি রাখতে চাইলে visible: false দিন)
+            notice: {
+                visible: true,
+                title: "NOTICE",
+                desc: "সার্ভার মেইনটেইনেন্স এর কাজ চলছে, সাময়িক অসুবিধার জন্য দুঃখিত।"
+            },
+
+            // ৪. অফার সেকশন
+            offer: {
+                title: "New Connection Offer",
+                desc: "নতুন সংযোগে রাউটার ফ্রি এবং ইন্সটলেশন চার্জ ৫০% ছাড়!",
+                btnText: "অফারটি নিন",
+                // অফার বাটনে ক্লিক করলে কি মেসেজ যাবে
+                waMessage: "আসসালামু আলাইকুম, আমি আপনাদের নতুন সংযোগ অফারটি (রাউটার ফ্রি) সম্পর্কে বিস্তারিত জানতে চাই।"
+            },
+
+            // ৫. রেফার বোনাস
+            refer: {
+                title: "REFER & EARN",
+                desc: "আপনার বন্ধুকে রেফার করলেই পাচ্ছেন নিশ্চিত ১ মাস ফ্রি ইন্টারনেট!",
+                btnText: "রেফার করুন",
+                // রেফার বাটনে ক্লিক করলে কি মেসেজ যাবে
+                waMessage: "আসসালামু আলাইকুম, আমি আমার বন্ধুকে রেফার করতে চাই। বিস্তারিত জানাবেন প্লিজ।"
+            },
+
+            // ৬. প্যাকেজ লিস্ট (এখান থেকেই সব প্যাকেজ কন্ট্রোল হবে)
+            // টাইপ: 'featured' হলে উপরে বড় করে দেখাবে, 'regular' হলে নিচে লিস্টে দেখাবে
+            packages: [
+                // FEATURED PACKAGES (উপরে বড় করে দেখাবে)
+                {
+                    name: "Padma Plus",
+                    speed: "28 Mbps",
+                    price: "৳525",
+                    type: "featured",
+                    tag: "Streaming", // ট্যাগের নাম
+                    color: "isp-gold" // কালার (isp-gold অথবা isp-orange)
+                },
+                {
+                    name: "Teesta Plus",
+                    speed: "57 Mbps",
+                    price: "৳1050",
+                    type: "featured",
+                    tag: "Gaming",
+                    color: "isp-orange"
+                },
+
+                // REGULAR PACKAGES (লিস্ট আকারে থাকবে)
+                { name: "Padma", speed: "25 Mbps", price: "৳500", type: "regular" },
+                { name: "Meghna", speed: "30 Mbps", price: "৳620", type: "regular" },
+                { name: "Meghna Plus", speed: "32 Mbps", price: "৳651", type: "regular" },
+                { name: "Jamuna", speed: "35 Mbps", price: "৳700", type: "regular" },
+                { name: "Surma", speed: "40 Mbps", price: "৳800", type: "regular" },
+                { name: "Surma Plus", speed: "45 Mbps", price: "৳840", type: "regular" },
+                { name: "Kirtankhola", speed: "50 Mbps", price: "৳900", type: "regular" },
+                { name: "EDC Project", speed: "60 Mbps", price: "৳1000", type: "regular" },
+                { name: "Teesta", speed: "55 Mbps", price: "৳1000", type: "regular" },
+                { name: "Karnaphuly", speed: "60 Mbps", price: "৳1200", type: "regular" },
+                { name: "Karnaphuly Plus", speed: "62 Mbps", price: "৳1260", type: "regular" },
+                { name: "Karatoya", speed: "65 Mbps", price: "৳1300", type: "regular" },
+                { name: "Titas", speed: "70 Mbps", price: "৳1500", type: "regular" },
+                { name: "Madhumoti", speed: "75 Mbps", price: "৳1600", type: "regular" },
+                { name: "Rupsha", speed: "80 Mbps", price: "৳1750", type: "regular" },
+                { name: "Brahmaputra", speed: "85 Mbps", price: "৳2000", type: "regular" }
+            ]
+        };
+
+        /* ================================================================
+           🚫 DO NOT EDIT BELOW THIS LINE (System Logic) 🚫
+        ================================================================
+        */
+
+        // Helper: Generate Clean WhatsApp Link
+        function getWaLink(text) {
+            // Encode URI component to handle spaces and special chars cleanly
+            // No weird underscores or symbols
+            return `https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent(text)}`;
+        }
+
+        // Initialize Site
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. MARQUEE
-            if (typeof siteData !== 'undefined' && siteData.marqueeText) {
-                const marqueeContent = document.getElementById('dynamicMarquee');
-                const itemHTML = `<div class="marquee-item"><i class="fas fa-bullhorn text-isp-orange text-xs"></i> ${siteData.marqueeText}</div>`;
-                marqueeContent.innerHTML = itemHTML.repeat(4);
+            
+            // 1. Navbar & Hero Buttons
+            document.getElementById('navCallBtn').href = `tel:+88${siteConfig.contact.phone}`;
+            
+            const navWa = document.getElementById('navWhatsAppBtn');
+            navWa.href = getWaLink(siteConfig.contact.genericMsg);
+
+            const heroMsg = document.getElementById('heroMsgBtn');
+            heroMsg.href = getWaLink(siteConfig.contact.genericMsg);
+
+            const footerWa = document.getElementById('footerWaBtn');
+            footerWa.href = getWaLink(siteConfig.contact.genericMsg);
+
+            // 2. Marquee
+            const marqueeContent = document.getElementById('dynamicMarquee');
+            const itemHTML = `<div class="marquee-item"><i class="fas fa-bullhorn text-isp-orange text-xs"></i> ${siteConfig.marqueeText}</div>`;
+            marqueeContent.innerHTML = itemHTML.repeat(4);
+            // Add Phone to marquee
+            const phoneHTML = `<div class="marquee-item"><i class="fas fa-phone-alt text-yellow-300"></i> হটলাইন: ${siteConfig.contact.phone}</div>`;
+            marqueeContent.innerHTML += phoneHTML.repeat(2);
+
+            // 3. Notice Board
+            const noticeSection = document.getElementById('noticeSection');
+            if (siteConfig.notice.visible) {
+                document.getElementById('noticeTitle').innerText = siteConfig.notice.title;
+                document.getElementById('noticeDesc').innerText = siteConfig.notice.desc;
+            } else {
+                noticeSection.style.display = 'none';
             }
-            // 2. Data Load
-            if (typeof siteData !== 'undefined') {
-                document.getElementById('newsBadge').innerText = siteData.newsBadge;
-                document.getElementById('newsTitle').innerText = siteData.newsTitle;
-                document.getElementById('newsDesc').innerText = siteData.newsDesc;
-                // Offer Button
-                if(siteData.showButton) {
-                    document.getElementById('offerBtnContainer').classList.remove('hidden');
-                    const btn = document.getElementById('offerBtn');
-                    btn.href = siteData.btnLink;
-                    document.getElementById('offerBtnText').innerText = siteData.btnText;
-                }
-                // Notice Board
-                document.getElementById('noticeTitle').innerText = siteData.noticeTitle;
-                document.getElementById('noticeDesc').innerText = siteData.noticeDesc;
-                // Refer Bonus
-                document.getElementById('referTitle').innerText = siteData.referTitle;
-                document.getElementById('referDesc').innerText = siteData.referDesc;
-                document.getElementById('referBtnText').innerText = siteData.referBtn;
-            }
-            // 3. Animations
+
+            // 4. Offer Section
+            document.getElementById('offerTitle').innerText = siteConfig.offer.title;
+            document.getElementById('offerDesc').innerText = siteConfig.offer.desc;
+            document.getElementById('offerBtnText').innerText = siteConfig.offer.btnText;
+            document.getElementById('offerBtn').href = getWaLink(siteConfig.offer.waMessage);
+
+            // 5. Refer Section
+            document.getElementById('referTitle').innerText = siteConfig.refer.title;
+            document.getElementById('referDesc').innerText = siteConfig.refer.desc;
+            document.getElementById('referBtnText').innerText = siteConfig.refer.btnText;
+            document.getElementById('referBtn').href = getWaLink(siteConfig.refer.waMessage);
+
+            // 6. Payment Modal Number
+            document.getElementById('bkashNumberDisplay').innerText = siteConfig.contact.bkash;
+
+            // 7. Render Packages
+            renderPackages();
+
+            // 8. Animations Observer
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -422,7 +499,54 @@
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         });
 
-        // 4. SCROLL TO BOTTOM FIX
+        // Function to Render Packages from Config
+        function renderPackages() {
+            const featuredContainer = document.getElementById('featuredPackages');
+            const regularList = document.getElementById('regularPackageList');
+            
+            featuredContainer.innerHTML = '';
+            regularList.innerHTML = '';
+
+            siteConfig.packages.forEach((pkg, index) => {
+                // Clean Generic Message for Package
+                const pkgMsg = `আসসালামু আলাইকুম, আমি ${pkg.name} (${pkg.speed}) - ${pkg.price} প্যাকেজটি নিতে আগ্রহী।`;
+                const waLink = getWaLink(pkgMsg);
+
+                if (pkg.type === 'featured') {
+                    // Render Featured Card
+                    const colorClass = pkg.color || 'isp-gold'; // Default gold
+                    const cardHTML = `
+                        <div class="glass border border-${colorClass.replace('text-', '')}/40 rounded-3xl p-6 relative overflow-hidden group bg-gradient-to-br from-${colorClass.replace('text-', '')}/5 to-transparent hover:shadow-lg hover:shadow-${colorClass.replace('text-', '')}/10 transition-all animate-float-heavy" style="animation-delay: ${index * 0.5}s">
+                            <div class="absolute top-0 right-0 bg-${colorClass.replace('text-', '')} text-black text-[10px] font-extrabold px-3 py-1 rounded-bl-xl uppercase tracking-wider shadow-lg">${pkg.tag}</div>
+                            <div class="relative z-10">
+                                <h3 class="${colorClass} font-black text-2xl mb-1">${pkg.name}</h3>
+                                <div class="flex items-baseline mb-4"><span class="text-5xl font-black text-white">${pkg.speed.split(' ')[0]}</span> <span class="text-sm text-gray-400 ml-1 font-bold">${pkg.speed.split(' ')[1]}</span></div>
+                                <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                                    <span class="text-2xl font-black text-white">${pkg.price}</span>
+                                    <a href="${waLink}" target="_blank" class="bg-${colorClass.replace('text-', '')} text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-white transition-colors shadow-lg active:scale-95 transform">Order</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    featuredContainer.innerHTML += cardHTML;
+                } else {
+                    // Render List Item
+                    const listHTML = `
+                        <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5 transition-colors">
+                            <div class="font-bold w-[35%] text-gray-200">${pkg.name}</div>
+                            <div class="text-center text-isp-green w-[25%] font-bold text-xs md:text-sm">${pkg.speed}</div>
+                            <div class="text-center w-[20%] font-bold text-isp-gold text-xs md:text-sm">${pkg.price}</div>
+                            <div class="text-right w-[20%]">
+                                <a href="${waLink}" target="_blank" class="text-[10px] md:text-xs bg-white/10 px-3 py-1.5 rounded hover:bg-isp-green hover:text-black transition-colors font-bold uppercase tracking-wide">Order</a>
+                            </div>
+                        </div>
+                    `;
+                    regularList.innerHTML += listHTML;
+                }
+            });
+        }
+
+        // UI Functions
         function togglePackages() {
             const wrapper = document.getElementById('morePackagesWrapper');
             const btn = document.getElementById('pkgToggleBtn');
@@ -430,8 +554,7 @@
             
             if (wrapper.classList.contains('open')) {
                 wrapper.classList.remove('open');
-                btn.innerHTML = 'View All Packages <i class="fas fa-chevron-down text-xs"></i>';
-                // Scroll back to table header
+                btn.innerHTML = 'View All Packages <i class="fas fa-chevron-down text-[10px]"></i>';
                 setTimeout(() => {
                     const offset = 80; 
                     const bodyRect = document.body.getBoundingClientRect().top;
@@ -443,21 +566,18 @@
             } else {
                 wrapper.classList.add('open');
                 btn.innerHTML = 'Show Less <i class="fas fa-chevron-up text-xs"></i>';
-                
-                // SCROLL TO VERY BOTTOM OF THE LIST
                 setTimeout(() => {
                     btn.scrollIntoView({ behavior: "smooth", block: "center" });
                 }, 400); 
             }
         }
 
-        // Modal
         const modal = document.getElementById('billModal');
         function openModal() { modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
         function closeModal() { modal.classList.remove('show'); document.body.style.overflow = ''; }
         
         function copyNumber() {
-            navigator.clipboard.writeText("01915815671");
+            navigator.clipboard.writeText(siteConfig.contact.bkash);
             const feedback = document.getElementById('copyFeedback');
             feedback.classList.add('show');
             setTimeout(() => feedback.classList.remove('show'), 1500);
@@ -467,10 +587,15 @@
             const name = document.getElementById('payName').value;
             const amount = document.getElementById('payAmount').value;
             const digits = document.getElementById('payDigits').value;
+            
             if(!name || !amount || !digits) { alert('সব তথ্য দিন'); return; }
-            window.open(`https://wa.me/8801931706655?text=Bill_Pay:%0AName:${name}%0AAmount:${amount}%0ALastDigits:${digits}`, '_blank');
+            
+            // Generic formatted Payment Message
+            const msg = `আসসালামু আলাইকুম, আমি বিল পে করেছি।\n\nName: ${name}\nAmount: ${amount}\nLast Digits: ${digits}`;
+            window.open(getWaLink(msg), '_blank');
             closeModal();
         }
     </script>
 </body>
 </html>
+
