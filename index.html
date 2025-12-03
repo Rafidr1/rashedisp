@@ -9,6 +9,7 @@
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,13 +19,11 @@
                     colors: { isp: { bg: '#0f172a', green: '#10b981', orange: '#f97316', dark: '#020617', gold: '#fbbf24', cyan: '#06b6d4' } },
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], bengali: ['Hind Siliguri', 'sans-serif'] },
                     animation: { 
-                        'blob': 'blob 10s infinite alternate', 
                         'float-heavy': 'floatHeavy 4s ease-in-out infinite',
                         'pulse-neon': 'pulseNeon 1.5s infinite',
                         'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards'
                     },
                     keyframes: {
-                        blob: { '0%': { transform: 'translate(0, 0) scale(1)' }, '100%': { transform: 'translate(30px, -30px) scale(1.2)' } },
                         floatHeavy: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-15px)' } },
                         pulseNeon: { '0%': { boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.7)' }, '70%': { boxShadow: '0 0 0 15px rgba(16, 185, 129, 0)' }, '100%': { boxShadow: '0 0 0 0 rgba(16, 185, 129, 0)' } },
                         slideUp: { '0%': { opacity: '0', transform: 'translateY(40px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
@@ -34,53 +33,38 @@
         }
     </script>
 
+    <!-- Styles -->
     <style>
         body { background-color: #020617; color: white; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-        
-        /* --- BACKGROUND ANIMATION --- */
         .nebula-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -2; background: #020617; }
-        .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; will-change: transform; }
-        .blob-1 { top: -10%; left: -20%; width: 80vw; height: 80vw; background: #059669; animation: blob 12s infinite alternate; }
-        .blob-2 { bottom: -10%; right: -20%; width: 80vw; height: 80vw; background: #ea580c; animation: blob 15s infinite alternate-reverse; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; will-change: transform; animation: blob 15s infinite alternate; }
+        .blob-1 { top: -10%; left: -20%; width: 80vw; height: 80vw; background: #059669; }
+        .blob-2 { bottom: -10%; right: -20%; width: 80vw; height: 80vw; background: #ea580c; animation-direction: alternate-reverse; }
         .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 60%, transparent 100%); }
-
-        /* --- GLASS PRO --- */
-        .glass {
-            background: rgba(20, 30, 50, 0.65);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
+        .glass { background: rgba(20, 30, 50, 0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); transition: all 0.3s; }
         .glass:active { transform: scale(0.96); border-color: #10b981; }
-
-        /* --- MARQUEE --- */
         .marquee-wrapper { width: 100%; overflow: hidden; background: linear-gradient(90deg, #064e3b, #0f766e); height: 45px; display: flex; align-items: center; position: relative; z-index: 50; border-bottom: 1px solid rgba(255,255,255,0.2); }
         .marquee-content { display: flex; width: max-content; animation: scroll 30s linear infinite; }
         .marquee-item { padding-right: 50px; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; color: #fff; white-space: nowrap; }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        /* --- ANIMATIONS --- */
         .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         .reveal.active { opacity: 1; transform: translateY(0); }
-        
         .btn-shine { position: relative; overflow: hidden; }
         .btn-shine::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent); transform: skewX(-25deg); animation: shine 2s infinite; }
         @keyframes shine { 100% { left: 200%; } }
-
         .expand-wrapper { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.6s ease-out; }
         .expand-wrapper.open { grid-template-rows: 1fr; }
         .expand-inner { overflow: hidden; }
-
-        /* --- MODAL --- */
         .modal { transition: opacity 0.3s, visibility 0.3s; opacity: 0; visibility: hidden; z-index: 100; }
         .modal.show { opacity: 1; visibility: visible; }
         .modal-content { transform: scale(0.8) translateY(50px); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .modal.show .modal-content { transform: scale(1) translateY(0); }
-        
         .copy-toast { position: absolute; inset: 0; background: rgba(16, 185, 129, 0.95); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; opacity: 0; pointer-events: none; transition: opacity 0.3s; border-radius: 12px; }
         .copy-toast.show { opacity: 1; }
     </style>
+    
+    <!-- LINK TO DATA FILE -->
+    <script src="data.js"></script>
 </head>
 <body class="font-sans antialiased selection:bg-isp-orange selection:text-white">
 
@@ -90,19 +74,22 @@
     </div>
     <div class="grid-overlay"></div>
 
-    <!-- DYNAMIC MARQUEE -->
+    <!-- MARQUEE (Fixed) -->
     <div class="marquee-wrapper shadow-lg">
         <div class="marquee-content" id="dynamicMarquee">
-            <!-- Content will be injected via JS -->
+            <div class="marquee-item"><i class="fas fa-bullhorn text-isp-orange text-xs"></i> খোরদ, গৌরিহ্রদ, ভাংবাড়ীয়া এলাকায় বাফারলেস ইন্টারনেট!</div>
+            <div class="marquee-item"><i class="fas fa-phone-alt text-yellow-300"></i> হটলাইন: 01931-706655</div>
+            <div class="marquee-item"><i class="fas fa-bullhorn text-isp-orange text-xs"></i> খোরদ, গৌরিহ্রদ, ভাংবাড়ীয়া এলাকায় বাফারলেস ইন্টারনেট!</div>
+            <div class="marquee-item"><i class="fas fa-phone-alt text-yellow-300"></i> হটলাইন: 01931-706655</div>
+            <div class="marquee-item"><i class="fas fa-bullhorn text-isp-orange text-xs"></i> খোরদ, গৌরিহ্রদ, ভাংবাড়ীয়া এলাকায় বাফারলেস ইন্টারনেট!</div>
+            <div class="marquee-item"><i class="fas fa-phone-alt text-yellow-300"></i> হটলাইন: 01931-706655</div>
         </div>
     </div>
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR (Fixed) -->
     <nav class="sticky top-0 z-40 glass !bg-isp-dark/80 !border-b !border-white/10 !rounded-none backdrop-blur-xl animate-slide-up">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-18 py-2">
-                
-                <!-- BRAND -->
                 <div class="flex items-center gap-2 flex-1 min-w-0">
                     <div class="bg-white p-1 rounded-xl shadow-lg shrink-0 animate-float-heavy">
                         <img src="https://payment.udoyadn.com/DefaultImages/Udoy_Logo.jpg" alt="Logo" class="h-7 w-auto object-contain">
@@ -117,13 +104,11 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- BUTTONS -->
                 <div class="flex items-center gap-2 shrink-0 ml-2">
-                    <a id="navCallBtn" href="#" class="bg-white/10 hover:bg-white/20 text-white w-9 h-9 flex items-center justify-center rounded-full border border-white/20 transition-all active:scale-75 shadow-lg shadow-white/10 animate-float-heavy" style="animation-delay: 1s;">
+                    <a href="tel:+8801931706655" class="bg-white/10 hover:bg-white/20 text-white w-9 h-9 flex items-center justify-center rounded-full border border-white/20 transition-all active:scale-75 shadow-lg shadow-white/10 animate-float-heavy" style="animation-delay: 1s;">
                          <i class="fas fa-phone-alt text-sm"></i>
                     </a>
-                    <a id="navWhatsAppBtn" href="#" target="_blank" class="btn-shine bg-gradient-to-r from-green-600 to-green-500 text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 font-bold shadow-lg shadow-green-500/50 text-xs active:scale-90 transition-transform">
+                    <a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20বিস্তারিত%20জানতে%20চাই।" target="_blank" class="btn-shine bg-gradient-to-r from-green-600 to-green-500 text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 font-bold shadow-lg shadow-green-500/50 text-xs active:scale-90 transition-transform">
                         <i class="fab fa-whatsapp text-base"></i>
                         <span>WhatsApp</span>
                     </a>
@@ -132,35 +117,31 @@
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
+    <!-- HERO SECTION (Fixed) -->
     <section class="relative pt-14 pb-10 z-10 px-4">
         <div class="max-w-7xl mx-auto text-center">
             <div class="reveal inline-block px-4 py-1.5 rounded-full border border-isp-green/30 bg-isp-green/10 text-isp-green text-[10px] md:text-xs font-bold uppercase tracking-wider mb-4 backdrop-blur-md shadow-lg shadow-green-500/10 animate-float-heavy">
                 🚀 #1 Fastest FiberNet
             </div>
-            
             <h1 class="reveal text-4xl md:text-6xl font-black tracking-tighter mb-3 leading-[1.1] text-white drop-shadow-2xl delay-100">
                 UNLEASH THE <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-isp-green via-cyan-400 to-isp-green animate-pulse">ULTIMATE SPEED</span>
             </h1>
-            
             <p class="reveal text-base md:text-lg text-gray-300 font-medium max-w-xl mx-auto font-bengali leading-relaxed delay-200 mt-3">
                 বাফারলেস <b class="text-white">4K স্ট্রিমিং</b> এবং ল্যাগ-ফ্রি গেমিং এর চূড়ান্ত অভিজ্ঞতা নিন আমাদের সাথে।
             </p>
-            
             <div class="reveal mt-8 flex flex-col sm:flex-row justify-center gap-4 delay-300">
                 <a href="#packages" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-isp-orange to-red-600 text-white font-extrabold text-lg shadow-xl shadow-orange-500/40 active:scale-95 transition-transform hover:-translate-y-2 animate-float-heavy" style="animation-delay: 0.5s;">
                     প্যাকেজ দেখুন <i class="fas fa-arrow-right ml-2"></i>
                 </a>
-                <!-- Generic Message Button -->
-                <a id="heroMsgBtn" href="#" target="_blank" class="px-8 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-lg backdrop-blur-md active:scale-95 transition-transform flex items-center justify-center gap-2 hover:border-white/30 animate-float-heavy" style="animation-delay: 1s;">
+                <a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20আপনাদের%20সার্ভিস%20সম্পর্কে%20জানতে%20চাই।" target="_blank" class="px-8 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-lg backdrop-blur-md active:scale-95 transition-transform flex items-center justify-center gap-2 hover:border-white/30 animate-float-heavy" style="animation-delay: 1s;">
                     <i class="far fa-comment-dots"></i> মেসেজ দিন
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- NOTICE BOARD -->
+    <!-- NOTICE BOARD (Dynamic) -->
     <section class="py-6 z-10 relative px-4" id="noticeSection">
         <div class="max-w-3xl mx-auto reveal">
             <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 flex items-start gap-3 backdrop-blur-md shadow-lg hover:shadow-yellow-500/20 transition-shadow">
@@ -175,7 +156,7 @@
         </div>
     </section>
 
-    <!-- OFFERS & REFER -->
+    <!-- OFFERS & REFER (Dynamic) -->
     <section class="py-8 z-10 relative px-4">
         <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5 reveal">
             <!-- Main Offer -->
@@ -183,7 +164,7 @@
                 <div class="absolute top-0 right-0 bg-isp-green text-black text-[10px] font-bold px-3 py-1 rounded-bl-xl">HOT OFFER</div>
                 <h2 class="text-2xl font-black mb-2 text-white" id="offerTitle">...</h2>
                 <p class="text-gray-300 font-bengali text-sm mb-4" id="offerDesc">...</p>
-                <a id="offerBtn" href="#" class="inline-flex items-center gap-2 text-isp-green font-bold text-sm hover:underline">
+                <a id="offerBtn" href="#" target="_blank" class="inline-flex items-center gap-2 text-isp-green font-bold text-sm hover:underline">
                     <span id="offerBtnText">বিস্তারিত</span> <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -193,14 +174,14 @@
                 <div class="absolute top-0 right-0 bg-purple-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl">BONUS</div>
                 <h2 class="text-2xl font-black mb-2 text-white" id="referTitle">...</h2>
                 <p class="text-gray-300 font-bengali text-sm mb-4" id="referDesc">...</p>
-                <a id="referBtn" href="#" class="inline-flex items-center gap-2 text-purple-400 font-bold text-sm hover:underline">
+                <a id="referBtn" href="#" target="_blank" class="inline-flex items-center gap-2 text-purple-400 font-bold text-sm hover:underline">
                     <span id="referBtnText">রেফার করুন</span> <i class="fas fa-share"></i>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- ENTERTAINMENT & TOOLS -->
+    <!-- ENTERTAINMENT & TOOLS (Fixed) -->
     <section class="py-8 relative z-10 px-4">
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center justify-center gap-4 mb-8 reveal">
@@ -208,7 +189,6 @@
                 <h2 class="text-white/80 font-bengali font-bold text-xs uppercase tracking-[0.2em]">এন্টারটেইনমেন্ট</h2>
                 <div class="h-px w-12 bg-gradient-to-l from-transparent to-white/20"></div>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
                 <a href="tv.html" class="reveal glass rounded-3xl p-6 border border-red-500/20 group relative overflow-hidden hover:border-red-500/50 transition-all animate-float-heavy">
                     <div class="absolute inset-0 bg-gradient-to-r from-red-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -227,7 +207,6 @@
                     </div>
                 </a>
             </div>
-
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <a href="https://fast.com" target="_blank" class="reveal glass p-4 rounded-2xl text-center active:scale-95 group delay-150 hover:bg-white/10 animate-float-heavy">
                     <div class="w-10 h-10 mx-auto bg-white/5 rounded-full flex items-center justify-center mb-2 text-isp-green group-hover:bg-isp-green group-hover:text-white transition-colors"><i class="fas fa-tachometer-alt"></i></div>
@@ -249,7 +228,7 @@
         </div>
     </section>
 
-    <!-- PACKAGES SECTION -->
+    <!-- PACKAGES SECTION (Fixed in HTML) -->
     <section id="packages" class="py-12 relative z-10 px-4">
         <div class="max-w-4xl mx-auto reveal">
             <div class="flex items-center justify-center gap-4 mb-8">
@@ -258,12 +237,35 @@
                 <div class="h-px w-12 bg-gradient-to-l from-transparent to-isp-orange"></div>
             </div>
 
-            <!-- FEATURED (Dynamic) -->
-            <div id="featuredPackages" class="grid md:grid-cols-2 gap-6 mb-8">
-                <!-- Injected via JS -->
+            <!-- FEATURED PACKAGES -->
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Padma Plus -->
+                <div class="glass border border-isp-gold/40 rounded-3xl p-6 relative overflow-hidden group bg-gradient-to-br from-isp-gold/5 to-transparent hover:shadow-lg hover:shadow-isp-gold/10 transition-all animate-float-heavy">
+                    <div class="absolute top-0 right-0 bg-isp-gold text-black text-[10px] font-extrabold px-3 py-1 rounded-bl-xl uppercase tracking-wider shadow-lg">Streaming</div>
+                    <div class="relative z-10">
+                        <h3 class="text-isp-gold font-black text-2xl mb-1">Padma Plus</h3>
+                        <div class="flex items-baseline mb-4"><span class="text-5xl font-black text-white">28</span> <span class="text-sm text-gray-400 ml-1 font-bold">Mbps</span></div>
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                            <span class="text-2xl font-black text-white">৳525</span>
+                            <a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Padma%20Plus%20(28%20Mbps)%20-%20525tk%20প্যাকেজটি%20নিতে%20আগ্রহী।" target="_blank" class="bg-isp-gold text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-white transition-colors shadow-lg active:scale-95 transform">Order</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Teesta Plus -->
+                <div class="glass border border-isp-orange/40 rounded-3xl p-6 relative overflow-hidden group bg-gradient-to-br from-isp-orange/5 to-transparent hover:shadow-lg hover:shadow-isp-orange/10 transition-all animate-float-heavy" style="animation-delay: 2s;">
+                    <div class="absolute top-0 right-0 bg-isp-orange text-black text-[10px] font-extrabold px-3 py-1 rounded-bl-xl uppercase tracking-wider shadow-lg">Gaming</div>
+                    <div class="relative z-10">
+                        <h3 class="text-isp-orange font-black text-2xl mb-1">Teesta Plus</h3>
+                        <div class="flex items-baseline mb-4"><span class="text-5xl font-black text-white">57</span> <span class="text-sm text-gray-400 ml-1 font-bold">Mbps</span></div>
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                            <span class="text-2xl font-black text-white">৳1050</span>
+                            <a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Teesta%20Plus%20(57%20Mbps)%20-%201050tk%20প্যাকেজটি%20নিতে%20আগ্রহী।" target="_blank" class="bg-isp-orange text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-white transition-colors shadow-lg active:scale-95 transform">Order</a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- REGULAR LIST (Dynamic) -->
+            <!-- REGULAR LIST CONTAINER -->
             <div id="packageTableContainer" class="glass rounded-3xl overflow-hidden border border-white/10">
                 <div class="bg-white/5 px-5 py-4 flex justify-between text-[10px] uppercase tracking-widest text-gray-400 font-bold border-b border-white/5">
                     <div class="w-[35%]">Package</div>
@@ -275,8 +277,24 @@
                 <!-- Hidden List -->
                 <div id="morePackagesWrapper" class="expand-wrapper">
                     <div class="expand-inner">
-                        <div id="regularPackageList" class="divide-y divide-white/5 px-0 font-medium text-sm text-white bg-black/20">
-                            <!-- Injected via JS -->
+                        <div class="divide-y divide-white/5 px-0 font-medium text-sm text-white bg-black/20">
+                            <!-- Fixed List -->
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Padma</div><div class="text-center text-isp-green w-[25%] font-bold">25 Mbps</div><div class="text-center w-[20%] font-bold">৳500</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Padma%20(25%20Mbps)%20-%20500tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Meghna</div><div class="text-center text-isp-green w-[25%] font-bold">30 Mbps</div><div class="text-center w-[20%] font-bold">৳620</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Meghna%20(30%20Mbps)%20-%20620tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Meghna Plus</div><div class="text-center text-isp-green w-[25%] font-bold">32 Mbps</div><div class="text-center w-[20%] font-bold">৳651</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Meghna%20Plus%20(32%20Mbps)%20-%20651tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Jamuna</div><div class="text-center text-isp-green w-[25%] font-bold">35 Mbps</div><div class="text-center w-[20%] font-bold">৳700</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Jamuna%20(35%20Mbps)%20-%20700tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Surma</div><div class="text-center text-isp-green w-[25%] font-bold">40 Mbps</div><div class="text-center w-[20%] font-bold">৳800</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Surma%20(40%20Mbps)%20-%20800tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Surma Plus</div><div class="text-center text-isp-green w-[25%] font-bold">45 Mbps</div><div class="text-center w-[20%] font-bold">৳840</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Surma%20Plus%20(45%20Mbps)%20-%20840tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Kirtankhola</div><div class="text-center text-isp-green w-[25%] font-bold">50 Mbps</div><div class="text-center w-[20%] font-bold">৳900</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Kirtankhola%20(50%20Mbps)%20-%20900tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">EDC Project</div><div class="text-center text-isp-green w-[25%] font-bold">60 Mbps</div><div class="text-center w-[20%] font-bold">৳1000</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20EDC%20Project%20(60%20Mbps)%20-%201000tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Teesta</div><div class="text-center text-isp-green w-[25%] font-bold">55 Mbps</div><div class="text-center w-[20%] font-bold">৳1000</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Teesta%20(55%20Mbps)%20-%201000tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Karnaphuly</div><div class="text-center text-isp-green w-[25%] font-bold">60 Mbps</div><div class="text-center w-[20%] font-bold">৳1200</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Karnaphuly%20(60%20Mbps)%20-%201200tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Karnaphuly Plus</div><div class="text-center text-isp-green w-[25%] font-bold">62 Mbps</div><div class="text-center w-[20%] font-bold">৳1260</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Karnaphuly%20Plus%20(62%20Mbps)%20-%201260tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Karatoya</div><div class="text-center text-isp-green w-[25%] font-bold">65 Mbps</div><div class="text-center w-[20%] font-bold">৳1300</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Karatoya%20(65%20Mbps)%20-%201300tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Titas</div><div class="text-center text-isp-green w-[25%] font-bold">70 Mbps</div><div class="text-center w-[20%] font-bold">৳1500</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Titas%20(70%20Mbps)%20-%201500tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Madhumoti</div><div class="text-center text-isp-green w-[25%] font-bold">75 Mbps</div><div class="text-center w-[20%] font-bold">৳1600</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Madhumoti%20(75%20Mbps)%20-%201600tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Rupsha</div><div class="text-center text-isp-green w-[25%] font-bold">80 Mbps</div><div class="text-center w-[20%] font-bold">৳1750</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Rupsha%20(80%20Mbps)%20-%201750tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
+                            <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5"><div class="font-bold w-[35%]">Brahmaputra</div><div class="text-center text-isp-green w-[25%] font-bold">85 Mbps</div><div class="text-center w-[20%] font-bold">৳2000</div><div class="text-right w-[20%]"><a href="https://wa.me/8801931706655?text=আসসালামু%20আলাইকুম,%20আমি%20Brahmaputra%20(85%20Mbps)%20-%202000tk%20প্যাকেজটি%20নিতে%20চাই।" target="_blank" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-isp-green hover:text-black">Order</a></div></div>
                         </div>
                     </div>
                 </div>
@@ -291,11 +309,11 @@
         </div>
     </section>
 
-    <!-- FOOTER -->
+    <!-- FOOTER (Fixed) -->
     <footer class="bg-black/50 pt-10 pb-6 border-t border-white/5 text-center relative z-10 backdrop-blur-md">
         <div class="mb-4 flex justify-center gap-4">
             <a href="https://www.facebook.com/share/1CsSTaWj94/" target="_blank" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a>
-            <a id="footerWaBtn" href="#" target="_blank" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-green-500 hover:text-white transition-colors"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://wa.me/8801931706655" target="_blank" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-green-500 hover:text-white transition-colors"><i class="fab fa-whatsapp"></i></a>
         </div>
         <p class="text-[10px] text-gray-600 font-medium tracking-wide">
             &copy; 2025 Rasheduzzaman ISP.<br>
@@ -303,7 +321,7 @@
         </p>
     </footer>
 
-    <!-- BILL PAY MODAL -->
+    <!-- BILL PAY MODAL (Fixed) -->
     <div id="billModal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/95 backdrop-blur-sm" onclick="closeModal()"></div>
         <div class="modal-content relative bg-[#1e293b] rounded-2xl w-full max-w-sm border border-white/10 shadow-2xl p-6">
@@ -320,19 +338,17 @@
                 <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center mb-5 cursor-pointer active:bg-white/10 hover:border-green-500/50 transition-all group relative overflow-hidden" onclick="copyNumber()">
                     <p class="text-[10px] text-gray-400 mb-1 uppercase tracking-widest group-hover:text-white">বিকাশ পার্সোনাল (কপি করতে ক্লিক করুন)</p>
                     <div class="flex items-center justify-center gap-3">
-                        <p class="text-2xl font-black text-white tracking-widest" id="bkashNumberDisplay">...</p>
+                        <p class="text-2xl font-black text-white tracking-widest">01915815671</p>
                         <i class="far fa-copy text-green-500 group-hover:scale-110 transition-transform"></i>
                     </div>
                     <div id="copyFeedback" class="copy-toast">নাম্বারটি কপি হয়েছে!</div>
                 </div>
             </div>
-
             <div class="space-y-4 mb-6">
                 <input type="text" id="payName" placeholder="আপনার নাম" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3.5 text-base text-white focus:outline-none focus:border-isp-green transition-colors placeholder-gray-600">
                 <input type="number" id="payAmount" placeholder="টাকার পরিমাণ" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3.5 text-base text-white focus:outline-none focus:border-isp-green transition-colors placeholder-gray-600">
                 <input type="tel" id="payDigits" maxlength="4" placeholder="সেন্ডার নাম্বারের শেষ ৪ ডিজিট" class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3.5 text-base text-white focus:outline-none focus:border-isp-green transition-colors placeholder-gray-600">
             </div>
-            
             <div class="flex gap-3">
                 <button onclick="closeModal()" class="flex-1 bg-white/5 hover:bg-white/10 text-gray-400 py-3.5 rounded-xl font-bold text-sm transition-colors">বন্ধ করুন</button>
                 <button onclick="sendPaymentInfo()" class="flex-[2] bg-isp-green hover:bg-green-600 text-white py-3.5 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-all">পেমেন্ট কনফার্ম করুন</button>
@@ -340,262 +356,66 @@
         </div>
     </div>
 
-    <!-- MAIN SCRIPT (EDIT DATA HERE) -->
+    <!-- SCRIPT (Only updates Notice, Offer, Refer) -->
     <script>
-        /* ================================================================
-           ⚡⚡ SITE CONFIGURATION (DATA.JS) - EDIT THIS SECTION ⚡⚡
-        ================================================================
-        */
-        const siteConfig = {
-            // ১. যোগাযোগ নাম্বার
-            contact: {
-                phone: "01931706655",       // কলের জন্য
-                whatsapp: "8801931706655",  // হোয়াটস্যাপ এর জন্য (৮৮ সহ)
-                bkash: "01915815671",       // বিল পে বিকাশ নাম্বার
-                
-                // Hero এবং Navbar বাটনে ক্লিক করলে এই মেসেজ যাবে
-                genericMsg: "আসসালামু আলাইকুম, আমি আপনাদের সার্ভিস সম্পর্কে বিস্তারিত জানতে চাই।"
-            },
+        // Fixed Phone Number for generating links
+        const WHATSAPP_NUM = "8801931706655";
 
-            // ২. স্ক্রলিং টেক্সট (Marquee)
-            marqueeText: "খোরদ, গৌরিহ্রদ, ভাংবাড়ীয়া এলাকায় বাফারলেস ইন্টারনেট!",
-
-            // ৩. নোটিশ বোর্ড (খালি রাখতে চাইলে visible: false দিন)
-            notice: {
-                visible: true,
-                title: "NOTICE",
-                desc: "সার্ভার মেইনটেইনেন্স এর কাজ চলছে, সাময়িক অসুবিধার জন্য দুঃখিত।"
-            },
-
-            // ৪. অফার সেকশন
-            offer: {
-                title: "New Connection Offer",
-                desc: "নতুন সংযোগে রাউটার ফ্রি এবং ইন্সটলেশন চার্জ ৫০% ছাড়!",
-                btnText: "অফারটি নিন",
-                // অফার বাটনে ক্লিক করলে কি মেসেজ যাবে
-                waMessage: "আসসালামু আলাইকুম, আমি আপনাদের নতুন সংযোগ অফারটি (রাউটার ফ্রি) সম্পর্কে বিস্তারিত জানতে চাই।"
-            },
-
-            // ৫. রেফার বোনাস
-            refer: {
-                title: "REFER & EARN",
-                desc: "আপনার বন্ধুকে রেফার করলেই পাচ্ছেন নিশ্চিত ১ মাস ফ্রি ইন্টারনেট!",
-                btnText: "রেফার করুন",
-                // রেফার বাটনে ক্লিক করলে কি মেসেজ যাবে
-                waMessage: "আসসালামু আলাইকুম, আমি আমার বন্ধুকে রেফার করতে চাই। বিস্তারিত জানাবেন প্লিজ।"
-            },
-
-            // ৬. প্যাকেজ লিস্ট (এখান থেকেই সব প্যাকেজ কন্ট্রোল হবে)
-            // টাইপ: 'featured' হলে উপরে বড় করে দেখাবে, 'regular' হলে নিচে লিস্টে দেখাবে
-            packages: [
-                // FEATURED PACKAGES (উপরে বড় করে দেখাবে)
-                {
-                    name: "Padma Plus",
-                    speed: "28 Mbps",
-                    price: "৳525",
-                    type: "featured",
-                    tag: "Streaming", // ট্যাগের নাম
-                    color: "isp-gold" // কালার (isp-gold অথবা isp-orange)
-                },
-                {
-                    name: "Teesta Plus",
-                    speed: "57 Mbps",
-                    price: "৳1050",
-                    type: "featured",
-                    tag: "Gaming",
-                    color: "isp-orange"
-                },
-
-                // REGULAR PACKAGES (লিস্ট আকারে থাকবে)
-                { name: "Padma", speed: "25 Mbps", price: "৳500", type: "regular" },
-                { name: "Meghna", speed: "30 Mbps", price: "৳620", type: "regular" },
-                { name: "Meghna Plus", speed: "32 Mbps", price: "৳651", type: "regular" },
-                { name: "Jamuna", speed: "35 Mbps", price: "৳700", type: "regular" },
-                { name: "Surma", speed: "40 Mbps", price: "৳800", type: "regular" },
-                { name: "Surma Plus", speed: "45 Mbps", price: "৳840", type: "regular" },
-                { name: "Kirtankhola", speed: "50 Mbps", price: "৳900", type: "regular" },
-                { name: "EDC Project", speed: "60 Mbps", price: "৳1000", type: "regular" },
-                { name: "Teesta", speed: "55 Mbps", price: "৳1000", type: "regular" },
-                { name: "Karnaphuly", speed: "60 Mbps", price: "৳1200", type: "regular" },
-                { name: "Karnaphuly Plus", speed: "62 Mbps", price: "৳1260", type: "regular" },
-                { name: "Karatoya", speed: "65 Mbps", price: "৳1300", type: "regular" },
-                { name: "Titas", speed: "70 Mbps", price: "৳1500", type: "regular" },
-                { name: "Madhumoti", speed: "75 Mbps", price: "৳1600", type: "regular" },
-                { name: "Rupsha", speed: "80 Mbps", price: "৳1750", type: "regular" },
-                { name: "Brahmaputra", speed: "85 Mbps", price: "৳2000", type: "regular" }
-            ]
-        };
-
-        /* ================================================================
-           🚫 DO NOT EDIT BELOW THIS LINE (System Logic) 🚫
-        ================================================================
-        */
-
-        // Helper: Generate Clean WhatsApp Link
-        function getWaLink(text) {
-            // Encode URI component to handle spaces and special chars cleanly
-            // No weird underscores or symbols
-            return `https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent(text)}`;
-        }
-
-        // Initialize Site
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // 1. Navbar & Hero Buttons
-            document.getElementById('navCallBtn').href = `tel:+88${siteConfig.contact.phone}`;
-            
-            const navWa = document.getElementById('navWhatsAppBtn');
-            navWa.href = getWaLink(siteConfig.contact.genericMsg);
+            // Check if siteData exists in data.js
+            if (typeof siteData !== 'undefined') {
+                // 1. Notice Board
+                if (siteData.notice.show) {
+                    document.getElementById('noticeTitle').innerText = siteData.notice.title;
+                    document.getElementById('noticeDesc').innerText = siteData.notice.text;
+                } else {
+                    document.getElementById('noticeSection').style.display = 'none';
+                }
 
-            const heroMsg = document.getElementById('heroMsgBtn');
-            heroMsg.href = getWaLink(siteConfig.contact.genericMsg);
+                // 2. Main Offer
+                document.getElementById('offerTitle').innerText = siteData.offer.title;
+                document.getElementById('offerDesc').innerText = siteData.offer.desc;
+                document.getElementById('offerBtnText').innerText = siteData.offer.btnText;
+                document.getElementById('offerBtn').href = `https://wa.me/${WHATSAPP_NUM}?text=${encodeURIComponent(siteData.offer.waMessage)}`;
 
-            const footerWa = document.getElementById('footerWaBtn');
-            footerWa.href = getWaLink(siteConfig.contact.genericMsg);
-
-            // 2. Marquee
-            const marqueeContent = document.getElementById('dynamicMarquee');
-            const itemHTML = `<div class="marquee-item"><i class="fas fa-bullhorn text-isp-orange text-xs"></i> ${siteConfig.marqueeText}</div>`;
-            marqueeContent.innerHTML = itemHTML.repeat(4);
-            // Add Phone to marquee
-            const phoneHTML = `<div class="marquee-item"><i class="fas fa-phone-alt text-yellow-300"></i> হটলাইন: ${siteConfig.contact.phone}</div>`;
-            marqueeContent.innerHTML += phoneHTML.repeat(2);
-
-            // 3. Notice Board
-            const noticeSection = document.getElementById('noticeSection');
-            if (siteConfig.notice.visible) {
-                document.getElementById('noticeTitle').innerText = siteConfig.notice.title;
-                document.getElementById('noticeDesc').innerText = siteConfig.notice.desc;
-            } else {
-                noticeSection.style.display = 'none';
+                // 3. Refer Section
+                document.getElementById('referTitle').innerText = siteData.refer.title;
+                document.getElementById('referDesc').innerText = siteData.refer.desc;
+                document.getElementById('referBtnText').innerText = siteData.refer.btnText;
+                document.getElementById('referBtn').href = `https://wa.me/${WHATSAPP_NUM}?text=${encodeURIComponent(siteData.refer.waMessage)}`;
             }
 
-            // 4. Offer Section
-            document.getElementById('offerTitle').innerText = siteConfig.offer.title;
-            document.getElementById('offerDesc').innerText = siteConfig.offer.desc;
-            document.getElementById('offerBtnText').innerText = siteConfig.offer.btnText;
-            document.getElementById('offerBtn').href = getWaLink(siteConfig.offer.waMessage);
-
-            // 5. Refer Section
-            document.getElementById('referTitle').innerText = siteConfig.refer.title;
-            document.getElementById('referDesc').innerText = siteConfig.refer.desc;
-            document.getElementById('referBtnText').innerText = siteConfig.refer.btnText;
-            document.getElementById('referBtn').href = getWaLink(siteConfig.refer.waMessage);
-
-            // 6. Payment Modal Number
-            document.getElementById('bkashNumberDisplay').innerText = siteConfig.contact.bkash;
-
-            // 7. Render Packages
-            renderPackages();
-
-            // 8. Animations Observer
+            // Animations
             const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
-                });
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
             }, { threshold: 0.1 });
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         });
 
-        // Function to Render Packages from Config
-        function renderPackages() {
-            const featuredContainer = document.getElementById('featuredPackages');
-            const regularList = document.getElementById('regularPackageList');
-            
-            featuredContainer.innerHTML = '';
-            regularList.innerHTML = '';
-
-            siteConfig.packages.forEach((pkg, index) => {
-                // Clean Generic Message for Package
-                const pkgMsg = `আসসালামু আলাইকুম, আমি ${pkg.name} (${pkg.speed}) - ${pkg.price} প্যাকেজটি নিতে আগ্রহী।`;
-                const waLink = getWaLink(pkgMsg);
-
-                if (pkg.type === 'featured') {
-                    // Render Featured Card
-                    const colorClass = pkg.color || 'isp-gold'; // Default gold
-                    const cardHTML = `
-                        <div class="glass border border-${colorClass.replace('text-', '')}/40 rounded-3xl p-6 relative overflow-hidden group bg-gradient-to-br from-${colorClass.replace('text-', '')}/5 to-transparent hover:shadow-lg hover:shadow-${colorClass.replace('text-', '')}/10 transition-all animate-float-heavy" style="animation-delay: ${index * 0.5}s">
-                            <div class="absolute top-0 right-0 bg-${colorClass.replace('text-', '')} text-black text-[10px] font-extrabold px-3 py-1 rounded-bl-xl uppercase tracking-wider shadow-lg">${pkg.tag}</div>
-                            <div class="relative z-10">
-                                <h3 class="${colorClass} font-black text-2xl mb-1">${pkg.name}</h3>
-                                <div class="flex items-baseline mb-4"><span class="text-5xl font-black text-white">${pkg.speed.split(' ')[0]}</span> <span class="text-sm text-gray-400 ml-1 font-bold">${pkg.speed.split(' ')[1]}</span></div>
-                                <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
-                                    <span class="text-2xl font-black text-white">${pkg.price}</span>
-                                    <a href="${waLink}" target="_blank" class="bg-${colorClass.replace('text-', '')} text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-white transition-colors shadow-lg active:scale-95 transform">Order</a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    featuredContainer.innerHTML += cardHTML;
-                } else {
-                    // Render List Item
-                    const listHTML = `
-                        <div class="flex items-center justify-between px-5 py-3 hover:bg-white/5 transition-colors">
-                            <div class="font-bold w-[35%] text-gray-200">${pkg.name}</div>
-                            <div class="text-center text-isp-green w-[25%] font-bold text-xs md:text-sm">${pkg.speed}</div>
-                            <div class="text-center w-[20%] font-bold text-isp-gold text-xs md:text-sm">${pkg.price}</div>
-                            <div class="text-right w-[20%]">
-                                <a href="${waLink}" target="_blank" class="text-[10px] md:text-xs bg-white/10 px-3 py-1.5 rounded hover:bg-isp-green hover:text-black transition-colors font-bold uppercase tracking-wide">Order</a>
-                            </div>
-                        </div>
-                    `;
-                    regularList.innerHTML += listHTML;
-                }
-            });
-        }
-
-        // UI Functions
+        // Fixed UI Functions
         function togglePackages() {
-            const wrapper = document.getElementById('morePackagesWrapper');
-            const btn = document.getElementById('pkgToggleBtn');
-            const container = document.getElementById('packageTableContainer');
-            
-            if (wrapper.classList.contains('open')) {
-                wrapper.classList.remove('open');
-                btn.innerHTML = 'View All Packages <i class="fas fa-chevron-down text-[10px]"></i>';
-                setTimeout(() => {
-                    const offset = 80; 
-                    const bodyRect = document.body.getBoundingClientRect().top;
-                    const elementRect = container.getBoundingClientRect().top;
-                    const elementPosition = elementRect - bodyRect;
-                    const offsetPosition = elementPosition - offset;
-                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-                }, 300);
+            const w = document.getElementById('morePackagesWrapper');
+            const b = document.getElementById('pkgToggleBtn');
+            const c = document.getElementById('packageTableContainer');
+            if(w.classList.contains('open')) {
+                w.classList.remove('open'); b.innerHTML = 'View All Packages <i class="fas fa-chevron-down text-[10px]"></i>';
+                setTimeout(() => window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }), 300);
             } else {
-                wrapper.classList.add('open');
-                btn.innerHTML = 'Show Less <i class="fas fa-chevron-up text-xs"></i>';
-                setTimeout(() => {
-                    btn.scrollIntoView({ behavior: "smooth", block: "center" });
-                }, 400); 
+                w.classList.add('open'); b.innerHTML = 'Show Less <i class="fas fa-chevron-up text-xs"></i>';
+                setTimeout(() => b.scrollIntoView({ behavior: "smooth", block: "center" }), 400);
             }
         }
-
-        const modal = document.getElementById('billModal');
-        function openModal() { modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
-        function closeModal() { modal.classList.remove('show'); document.body.style.overflow = ''; }
-        
-        function copyNumber() {
-            navigator.clipboard.writeText(siteConfig.contact.bkash);
-            const feedback = document.getElementById('copyFeedback');
-            feedback.classList.add('show');
-            setTimeout(() => feedback.classList.remove('show'), 1500);
-        }
-
-        function sendPaymentInfo() {
-            const name = document.getElementById('payName').value;
-            const amount = document.getElementById('payAmount').value;
-            const digits = document.getElementById('payDigits').value;
-            
-            if(!name || !amount || !digits) { alert('সব তথ্য দিন'); return; }
-            
-            // Generic formatted Payment Message
-            const msg = `আসসালামু আলাইকুম, আমি বিল পে করেছি।\n\nName: ${name}\nAmount: ${amount}\nLast Digits: ${digits}`;
-            window.open(getWaLink(msg), '_blank');
-            closeModal();
+        const m = document.getElementById('billModal');
+        function openModal(){ m.classList.add('show'); document.body.style.overflow='hidden'; }
+        function closeModal(){ m.classList.remove('show'); document.body.style.overflow=''; }
+        function copyNumber(){ navigator.clipboard.writeText('01915815671'); document.getElementById('copyFeedback').classList.add('show'); setTimeout(()=>document.getElementById('copyFeedback').classList.remove('show'),1500); }
+        function sendPaymentInfo(){
+            const n=document.getElementById('payName').value, a=document.getElementById('payAmount').value, d=document.getElementById('payDigits').value;
+            if(!n||!a||!d){alert('সব তথ্য দিন');return;}
+            window.open(`https://wa.me/${WHATSAPP_NUM}?text=${encodeURIComponent(`আসসালামু আলাইকুম, আমি বিল পে করেছি।\n\nName: ${n}\nAmount: ${a}\nLast Digits: ${d}`)}`,'_blank'); closeModal();
         }
     </script>
 </body>
 </html>
+
 
