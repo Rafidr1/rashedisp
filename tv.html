@@ -1,233 +1,153 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rafid TV Premium</title>
-    <!-- Mixed Content Allow -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live TV</title>
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
-        /* General Styles */
-        body { background-color: #0f172a; color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
         
-        /* Focus Animation (TV Remote) */
-        .focusable { transition: all 0.2s; outline: none; border: 2px solid transparent; }
-        .focusable:focus, .focusable.focused { 
-            border-color: #fbbf24; transform: scale(1.02); background: #1e293b; z-index: 10; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
-        }
-
-        /* Layouts */
-        #login-screen { position: fixed; inset: 0; z-index: 50; background: #020617; display: flex; align-items: center; justify-content: center; }
-        #app-screen { display: none; height: 100vh; width: 100vw; flex-direction: column; }
-
-        /* Mobile Optimization */
-        @media (max-width: 768px) {
-            #main-layout { flex-direction: column; }
-            #sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 5px; order: 2; }
-            #content-area { order: 1; height: 40vh; }
-            #channel-list { order: 3; flex: 1; padding-bottom: 50px; }
-            .menu-btn { white-space: nowrap; padding: 8px 15px; font-size: 12px; }
-            .channel-card { height: 100px; }
-            .channel-card img { height: 40px; }
-        }
-
-        /* Desktop/TV Optimization */
-        @media (min-width: 769px) {
-            #main-layout { flex-direction: row; height: 100%; }
-            #sidebar { width: 220px; height: 100%; flex-direction: column; padding: 20px; border-right: 1px solid #334155; }
-            #content-area { flex: 1; display: flex; flex-direction: column; }
-            #video-container { height: 60%; background: black; }
-            #channel-list { flex: 1; overflow-y: auto; padding: 20px; }
-        }
-
-        /* Common Elements */
-        #channel-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; overflow-y: auto; scroll-behavior: smooth; }
-        .channel-card { background: #1e293b; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; padding: 10px; }
+        /* লেআউট */
+        #app { display: flex; height: 100vh; width: 100vw; }
         
-        /* Hide Scrollbar */
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        /* মোবাইল ভিউ (লম্বালম্বি) */
+        @media (orientation: portrait) {
+            #app { flex-direction: column; }
+            #player-box { width: 100%; height: 35vh; } /* প্লেয়ার ফিক্সড সাইজ */
+            #list-box { width: 100%; height: 65vh; }
+        }
+
+        /* টিভি/পিসি ভিউ (আড়াআড়ি) */
+        @media (orientation: landscape) {
+            #app { flex-direction: row; }
+            #player-box { flex: 2; height: 100vh; border-right: 1px solid #333; }
+            #list-box { flex: 1; height: 100vh; max-width: 400px; }
+        }
+
+        /* ভিডিও প্লেয়ার ক্লিন করা (টাইমলাইন রিমুভ) */
+        video { 
+            width: 100%; height: 100%; object-fit: contain; background: #000;
+        }
+        
+        /* এই কোডটি প্লেয়ারের নিচের দাগ (Timeline) গায়েব করে দিবে */
+        video::-webkit-media-controls-timeline { display: none !important; }
+        video::-webkit-media-controls-current-time-display { display: none !important; }
+        video::-webkit-media-controls-time-remaining-display { display: none !important; }
+
+        /* চ্যানেল কার্ড */
+        .card { 
+            background: #1a1a1a; padding: 10px; border-radius: 6px; 
+            display: flex; flex-direction: column; items-align: center; justify-content: center;
+            text-align: center; cursor: pointer; border: 2px solid transparent; 
+            transition: all 0.2s; min-height: 90px;
+        }
+        
+        /* ফোকাস ইফেক্ট */
+        .card:hover, .card:focus {
+            border-color: #fbbf24; background: #333; transform: scale(1.02); outline: none;
+        }
+
+        .card img { height: 40px; object-fit: contain; margin-bottom: 5px; margin-left: auto; margin-right: auto; }
+        .card h3 { font-size: 11px; color: #ddd; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+        /* স্ক্রলবার হাইড */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #333; }
     </style>
 </head>
 <body>
 
-    <!-- 1. LOGIN SCREEN -->
-    <div id="login-screen">
-        <div class="bg-slate-800 p-8 rounded-xl w-80 text-center border border-slate-700 shadow-2xl">
-            <div class="mb-6">
-                <i class="fas fa-play-circle text-5xl text-yellow-500 mb-2"></i>
-                <h1 class="text-xl font-bold tracking-widest">RAFID TV</h1>
-                <p class="text-[10px] text-slate-400">ENTER CREDENTIALS</p>
+    <div id="app">
+        <!-- ১. প্লেয়ার এরিয়া -->
+        <div id="player-box" class="relative">
+            <video id="video" controls autoplay playsinline></video>
+            
+            <!-- লোডিং চাকা -->
+            <div id="loader" class="absolute inset-0 flex items-center justify-center bg-black z-20 hidden">
+                <i class="fas fa-circle-notch fa-spin text-4xl text-yellow-500"></i>
             </div>
             
-            <p id="error-msg" class="text-red-400 text-xs mb-3 hidden bg-red-900/30 p-1 rounded"></p>
-
-            <input type="text" id="username" placeholder="Username" class="focusable w-full bg-slate-900 p-3 rounded mb-3 text-white border border-slate-600 text-center text-sm" onkeydown="if(event.key==='Enter') document.getElementById('password').focus()">
-            <input type="password" id="password" placeholder="Password" class="focusable w-full bg-slate-900 p-3 rounded mb-6 text-white border border-slate-600 text-center text-sm" onkeydown="if(event.key==='Enter') Auth.login()">
-            
-            <button onclick="Auth.login()" class="focusable w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 rounded text-sm transition-transform active:scale-95">
-                START WATCHING
-            </button>
+            <!-- টাইটেল -->
+            <div class="absolute top-0 left-0 p-3 bg-gradient-to-b from-black/80 to-transparent w-full pointer-events-none">
+                <span class="text-yellow-500 font-bold text-xs tracking-wider">LIVE TV</span>
+                <p id="channel-title" class="text-xs text-gray-300">Channel Loading...</p>
+            </div>
         </div>
-    </div>
 
-    <!-- 2. MAIN APP SCREEN -->
-    <div id="app-screen">
-        <div id="main-layout" class="flex h-full bg-[#0f172a]">
-            
-            <!-- Sidebar (Category Menu) -->
-            <div id="sidebar" class="bg-[#020617] flex gap-2 shrink-0">
-                <div class="hidden md:block mb-6 px-2">
-                    <h2 class="font-bold text-yellow-500">RAFID TV</h2>
-                    <p class="text-[10px] text-slate-500" id="user-badge">Guest</p>
-                </div>
-                
-                <button onclick="App.load('bd')" class="focusable menu-btn bg-slate-800 text-slate-300 rounded hover:bg-slate-700 text-left md:p-3 p-2 font-bold text-xs md:text-sm active">🇧🇩 Bangla</button>
-                <button onclick="App.load('sports')" class="focusable menu-btn bg-slate-800 text-slate-300 rounded hover:bg-slate-700 text-left md:p-3 p-2 font-bold text-xs md:text-sm">⚽ Sports</button>
-                <button onclick="App.load('kids')" class="focusable menu-btn bg-slate-800 text-slate-300 rounded hover:bg-slate-700 text-left md:p-3 p-2 font-bold text-xs md:text-sm">👶 Kids</button>
-                <button onclick="App.load('in')" class="focusable menu-btn bg-slate-800 text-slate-300 rounded hover:bg-slate-700 text-left md:p-3 p-2 font-bold text-xs md:text-sm">🇮🇳 India</button>
-                
-                <button onclick="Auth.logout()" class="focusable menu-btn bg-red-900/50 text-red-400 rounded hover:bg-red-900 text-left md:p-3 p-2 font-bold text-xs md:text-sm mt-auto">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
+        <!-- ২. লিস্ট এরিয়া -->
+        <div id="list-box" class="flex flex-col bg-[#111]">
+            <!-- মেনু -->
+            <div class="flex gap-2 p-2 bg-[#000] border-b border-[#222] overflow-x-auto">
+                <button onclick="App.load('bd')" class="bg-slate-800 text-gray-300 px-3 py-1 rounded text-xs font-bold whitespace-nowrap focus:bg-yellow-500 focus:text-black outline-none">Bangla</button>
+                <button onclick="App.load('sports')" class="bg-slate-800 text-gray-300 px-3 py-1 rounded text-xs font-bold whitespace-nowrap focus:bg-yellow-500 focus:text-black outline-none">Sports</button>
+                <button onclick="App.load('kids')" class="bg-slate-800 text-gray-300 px-3 py-1 rounded text-xs font-bold whitespace-nowrap focus:bg-yellow-500 focus:text-black outline-none">Kids</button>
+                <button onclick="App.load('in')" class="bg-slate-800 text-gray-300 px-3 py-1 rounded text-xs font-bold whitespace-nowrap focus:bg-yellow-500 focus:text-black outline-none">India</button>
             </div>
 
-            <!-- Content Area -->
-            <div id="content-area" class="flex-1 flex flex-col relative">
-                <!-- Video Player -->
-                <div id="video-container" class="relative bg-black w-full aspect-video md:aspect-auto md:h-[60%] shrink-0 border-b border-slate-800">
-                    <video id="player" controls class="w-full h-full object-contain"></video>
-                    <div id="loader" class="absolute inset-0 flex items-center justify-center bg-black/80 hidden z-10">
-                        <i class="fas fa-circle-notch fa-spin text-3xl text-yellow-500"></i>
-                    </div>
-                </div>
-
-                <!-- Channel Grid -->
-                <div id="channel-list" class="p-4 bg-[#0f172a] flex-1 overflow-y-auto">
-                    <!-- Channels will load here -->
-                </div>
+            <!-- লিস্ট -->
+            <div id="grid" class="flex-1 overflow-y-auto p-2 grid grid-cols-3 sm:grid-cols-2 gap-2 content-start">
+                <!-- লোড হবে -->
             </div>
         </div>
     </div>
 
     <script>
-        // --- ADMIN DATABASE (Edit Here) ---
-        const DB = {
-            users: [
-                { id: "rafid", pass: "admin", expiry: "2030-12-31" },
-                { id: "test", pass: "1234", expiry: "2025-01-01" },
-                { id: "tv1", pass: "1111", expiry: "2024-12-31" }
-            ]
-        };
-
-        // --- AUTHENTICATION & STORAGE ---
-        const Auth = {
-            init() {
-                // Check LocalStorage for Auto Login
-                const savedUser = localStorage.getItem('rafid_tv_user');
-                if (savedUser) {
-                    const user = JSON.parse(savedUser);
-                    // Re-validate expiration just in case
-                    if (this.checkExpiry(user)) {
-                        this.showApp(user);
-                    } else {
-                        localStorage.removeItem('rafid_tv_user'); // Expired session
-                    }
-                }
-            },
-
-            login() {
-                const u = document.getElementById('username').value.trim();
-                const p = document.getElementById('password').value.trim();
-                const errorEl = document.getElementById('error-msg');
-
-                const user = DB.users.find(c => c.id === u && c.pass === p);
-
-                if (!user) {
-                    errorEl.innerText = "Invalid Username or Password";
-                    errorEl.classList.remove('hidden');
-                    return;
-                }
-
-                if (!this.checkExpiry(user)) {
-                    errorEl.innerText = "Subscription Expired!";
-                    errorEl.classList.remove('hidden');
-                    return;
-                }
-
-                // Save to Storage (Auto Login Enabled)
-                localStorage.setItem('rafid_tv_user', JSON.stringify(user));
-                this.showApp(user);
-            },
-
-            checkExpiry(user) {
-                const today = new Date();
-                const exp = new Date(user.expiry);
-                return today <= exp;
-            },
-
-            showApp(user) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-screen').style.display = 'flex';
-                document.getElementById('user-badge').innerText = `User: ${user.id}`;
-                App.init(); // Start Player
-            },
-
-            logout() {
-                if(confirm("Are you sure you want to logout?")) {
-                    localStorage.removeItem('rafid_tv_user');
-                    location.reload();
-                }
-            }
-        };
-
-        // --- PLAYER LOGIC ---
         const App = {
             hls: null,
-            baseUrl: 'https://iptv-org.github.io/iptv',
-            proxy: 'https://api.allorigins.win/raw?url=',
+            // নতুন শক্তিশালী প্রোক্সি ব্যবহার করছি
+            proxy: 'https://api.codetabs.com/v1/proxy?quest=',
+            sources: {
+                bd: 'https://iptv-org.github.io/iptv/countries/bd.m3u',
+                sports: 'https://iptv-org.github.io/iptv/categories/sports.m3u',
+                kids: 'https://iptv-org.github.io/iptv/languages/hin.m3u',
+                in: 'https://iptv-org.github.io/iptv/countries/in.m3u'
+            },
 
             init() {
-                this.video = document.getElementById('player');
-                this.grid = document.getElementById('channel-list');
+                this.video = document.getElementById('video');
+                this.grid = document.getElementById('grid');
                 this.loader = document.getElementById('loader');
                 
-                // Keyboard / Remote Listener
-                document.addEventListener('keydown', (e) => this.handleRemote(e));
-                
-                // Load Default
+                // ডিফল্ট লোড
                 this.load('bd');
+
+                // টিভি রিমোট এন্টার কি ফিক্স
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && document.activeElement.classList.contains('card')) {
+                        document.activeElement.click();
+                    }
+                });
             },
 
             async load(type) {
                 this.loader.classList.remove('hidden');
-                this.grid.innerHTML = '';
-                
-                // Highlight Menu Button
-                document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('bg-yellow-600', 'text-white'));
-                // Just a visual cue, finding button by text is simpler for this demo
-                
-                let url = '';
-                if(type === 'bd') url = `${this.baseUrl}/countries/bd.m3u`;
-                if(type === 'sports') url = `${this.baseUrl}/categories/sports.m3u`;
-                if(type === 'kids') url = `${this.baseUrl}/languages/hin.m3u`;
-                if(type === 'in') url = `${this.baseUrl}/countries/in.m3u`;
+                this.grid.innerHTML = '<div class="col-span-full text-center mt-10 text-gray-500 text-xs">Connecting Server...</div>';
 
                 try {
+                    // ক্যাশ বাস্টিং (যাতে প্রতিবার নতুন লিস্ট আসে)
+                    const url = this.sources[type] + '?t=' + Date.now();
                     const res = await fetch(this.proxy + encodeURIComponent(url));
+                    
+                    if (!res.ok) throw new Error("Server Error");
+                    
                     const text = await res.text();
                     this.parse(text, type);
                 } catch(e) {
-                    this.grid.innerHTML = '<div class="col-span-full text-center p-5 text-red-500">Failed to load list.</div>';
+                    console.log(e);
+                    this.grid.innerHTML = '<div class="col-span-full text-center text-red-400 text-xs p-5">List Load Failed.<br>Try Refreshing.</div>';
                     this.loader.classList.add('hidden');
                 }
             },
 
             parse(m3u, type) {
                 const lines = m3u.split('\n');
+                this.grid.innerHTML = '';
                 let item = {};
                 let count = 0;
 
@@ -243,10 +163,13 @@
                     } else if(line.startsWith('http')) {
                         item.url = line;
                         let add = true;
-                        if(type === 'kids' && !item.name.toLowerCase().includes('cartoon') && !item.group.includes('kid')) add = false;
                         
+                        // ফিল্টার
+                        if(type === 'kids' && !item.name.toLowerCase().includes('cartoon') && !item.group.includes('kid')) add = false;
+
+                        // লিমিট ১০০ (টিভির জন্য সেফ জোন)
                         if(add && count < 100) {
-                            this.createCard(item);
+                            this.renderCard(item);
                             count++;
                         }
                         item = {};
@@ -255,84 +178,53 @@
                 this.loader.classList.add('hidden');
             },
 
-            createCard(item) {
+            renderCard(item) {
                 const div = document.createElement('div');
-                div.className = 'channel-card focusable';
-                div.tabIndex = 0; // Makes it focusable on TV
-                const logo = item.logo || `https://via.placeholder.com/60x60/1e293b/fbbf24?text=${item.name.substring(0,1)}`;
+                div.className = 'card';
+                div.tabIndex = 0; // রিমোট ফোকাস
+                const logo = item.logo || `https://via.placeholder.com/50?text=${item.name.charAt(0)}`;
                 
                 div.innerHTML = `
-                    <img src="${logo}" class="h-10 object-contain mb-2 rounded" onerror="this.src='https://via.placeholder.com/60'">
-                    <h3 class="text-xs font-bold text-slate-300 truncate w-full">${item.name}</h3>
+                    <img src="${logo}" onerror="this.src='https://via.placeholder.com/50'">
+                    <h3>${item.name}</h3>
                 `;
 
-                div.onclick = () => this.play(item.url);
-                // For TV Remote Enter Key
-                div.addEventListener('keydown', (e) => {
-                    if(e.key === 'Enter') this.play(item.url);
-                });
-
+                div.onclick = () => this.play(item.url, item.name);
                 this.grid.appendChild(div);
             },
 
-            play(url) {
+            play(url, name) {
+                document.getElementById('channel-title').innerText = name;
                 this.loader.classList.remove('hidden');
-                if(Hls.isSupported()) {
-                    if(this.hls) this.hls.destroy();
-                    this.hls = new Hls();
-                    this.hls.loadSource(url);
-                    this.hls.attachMedia(this.video);
-                    this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                        this.video.play();
+
+                // ১. সরাসরি প্লে (UC Browser / Mobile / TV Native)
+                this.video.src = url;
+                
+                const playPromise = this.video.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
                         this.loader.classList.add('hidden');
+                    }).catch(error => {
+                        // ২. সরাসরি না চললে HLS.js (PC / Chrome)
+                        if(Hls.isSupported()) {
+                            if(this.hls) this.hls.destroy();
+                            this.hls = new Hls();
+                            this.hls.loadSource(url);
+                            this.hls.attachMedia(this.video);
+                            this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                                this.video.play();
+                                this.loader.classList.add('hidden');
+                            });
+                            this.hls.on(Hls.Events.ERROR, (e, data) => {
+                                if(data.fatal) this.loader.classList.add('hidden');
+                            });
+                        }
                     });
-                } else if (this.video.canPlayType('application/vnd.apple.mpegurl')) {
-                    this.video.src = url;
-                    this.video.play();
-                    this.loader.classList.add('hidden');
-                }
-                
-                // Mobile: Scroll to top to see video
-                if(window.innerWidth < 768) {
-                    window.scrollTo({top: 0, behavior: 'smooth'});
-                }
-            },
-
-            // --- TV REMOTE NAVIGATION ---
-            handleRemote(e) {
-                const key = e.key;
-                const active = document.activeElement;
-                const focusables = Array.from(document.querySelectorAll('.focusable'));
-                
-                if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(key)) {
-                    e.preventDefault(); // Stop page scroll
-                    
-                    const index = focusables.indexOf(active);
-                    if(index === -1) { focusables[0]?.focus(); return; }
-
-                    // Grid Logic Calculation
-                    // Simple logic: Next/Prev element in DOM
-                    // For better grid navigation, we'd calculate rows, but linear is safer for simple lists
-                    if(key === 'ArrowRight' || key === 'ArrowDown') {
-                        const next = focusables[index + 1];
-                        if(next) {
-                            next.focus();
-                            next.scrollIntoView({block: 'center', behavior: 'smooth'});
-                        }
-                    }
-                    if(key === 'ArrowLeft' || key === 'ArrowUp') {
-                        const prev = focusables[index - 1];
-                        if(prev) {
-                            prev.focus();
-                            prev.scrollIntoView({block: 'center', behavior: 'smooth'});
-                        }
-                    }
                 }
             }
         };
 
-        // Run Check on Load
-        window.onload = () => Auth.init();
+        window.onload = () => App.init();
     </script>
 </body>
 </html>
