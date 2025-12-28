@@ -1,0 +1,23 @@
+[
+  {
+    "username": "rafid",
+    "password": "123",
+    "status": "active",
+    "expiry": "2025-12-31"
+  },
+  {
+    "username": "test",
+    "password": "test",
+    "status": "active",
+    "expiry": "2026-01-01"
+  },
+  {
+    "username": "blocked_user",
+    "password": "000",
+    "status": "expired",
+    "expiry": "2023-01-01"
+  }
+]
+
+
+
