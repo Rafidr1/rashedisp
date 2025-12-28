@@ -2,231 +2,409 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live TV</title>
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Premium IPTV BD & IN</title>
+    <!-- Tailwind CSS (ডিজাইনের জন্য) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
+    <!-- HLS.js (ভিডিও প্লেয়ারের জন্য) -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
-        body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
+        /* বেসিক স্টাইল এবং ডার্ক মোড */
+        body { background-color: #0f172a; color: #e2e8f0; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
         
-        /* লেআউট */
-        #app { display: flex; height: 100vh; width: 100vw; }
-        
-        /* মোবাইল ভিউ (লম্বালম্বি) */
-        @media (orientation: portrait) {
-            #app { flex-direction: column; }
-            #player-box { width: 100%; height: 35vh; } /* প্লেয়ার ফিক্সড সাইজ */
-            #list-box { width: 100%; height: 65vh; }
-        }
-
-        /* টিভি/পিসি ভিউ (আড়াআড়ি) */
-        @media (orientation: landscape) {
-            #app { flex-direction: row; }
-            #player-box { flex: 2; height: 100vh; border-right: 1px solid #333; }
-            #list-box { flex: 1; height: 100vh; max-width: 400px; }
-        }
-
-        /* ভিডিও প্লেয়ার ক্লিন করা (টাইমলাইন রিমুভ) */
-        video { 
-            width: 100%; height: 100%; object-fit: contain; background: #000;
+        /* টিভি রিমোট ফোকাস ইফেক্ট */
+        .focusable:focus {
+            outline: 3px solid #eab308; /* হলুদ বর্ডার ফোকাস করলে */
+            transform: scale(1.03);
+            z-index: 50;
+            background-color: #1e293b;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.6);
         }
         
-        /* এই কোডটি প্লেয়ারের নিচের দাগ (Timeline) গায়েব করে দিবে */
-        video::-webkit-media-controls-timeline { display: none !important; }
-        video::-webkit-media-controls-current-time-display { display: none !important; }
-        video::-webkit-media-controls-time-remaining-display { display: none !important; }
-
-        /* চ্যানেল কার্ড */
-        .card { 
-            background: #1a1a1a; padding: 10px; border-radius: 6px; 
-            display: flex; flex-direction: column; items-align: center; justify-content: center;
-            text-align: center; cursor: pointer; border: 2px solid transparent; 
-            transition: all 0.2s; min-height: 90px;
-        }
+        /* স্ক্রলবার লুকানো কিন্তু কাজ করবে */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* ফোকাস ইফেক্ট */
-        .card:hover, .card:focus {
-            border-color: #fbbf24; background: #333; transform: scale(1.02); outline: none;
-        }
-
-        .card img { height: 40px; object-fit: contain; margin-bottom: 5px; margin-left: auto; margin-right: auto; }
-        .card h3 { font-size: 11px; color: #ddd; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-
-        /* স্ক্রলবার হাইড */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #333; }
+        /* লোডার এনিমেশন */
+        .loader { border-top-color: #3b82f6; -webkit-animation: spinner 1.5s linear infinite; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body class="h-screen w-screen flex flex-col select-none">
 
-    <div id="app">
-        <!-- ১. প্লেয়ার এরিয়া -->
-        <div id="player-box" class="relative">
-            <video id="video" controls autoplay playsinline></video>
+    <!-- ১. লগইন স্ক্রিন (Login Screen) -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 bg-opacity-95">
+        <div class="bg-slate-800 p-8 rounded-xl shadow-2xl w-full max-w-sm border border-slate-700 text-center">
+            <i class="fas fa-tv text-5xl text-blue-500 mb-4"></i>
+            <h2 class="text-2xl font-bold text-white mb-6">আইপিটিভি লগইন</h2>
             
-            <!-- লোডিং চাকা -->
-            <div id="loader" class="absolute inset-0 flex items-center justify-center bg-black z-20 hidden">
-                <i class="fas fa-circle-notch fa-spin text-4xl text-yellow-500"></i>
-            </div>
+            <input type="text" id="username" class="w-full bg-slate-700 text-white rounded p-3 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focusable" placeholder="ব্যবহারকারীর নাম">
+            <input type="password" id="password" class="w-full bg-slate-700 text-white rounded p-3 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500 focusable" placeholder="পাসওয়ার্ড">
             
-            <!-- টাইটেল -->
-            <div class="absolute top-0 left-0 p-3 bg-gradient-to-b from-black/80 to-transparent w-full pointer-events-none">
-                <span class="text-yellow-500 font-bold text-xs tracking-wider">LIVE TV</span>
-                <p id="channel-title" class="text-xs text-gray-300">Channel Loading...</p>
-            </div>
+            <button id="login-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded transition focusable">
+                প্রবেশ করুন
+            </button>
+            <p id="login-error" class="text-red-500 text-sm mt-4 hidden">ভুল তথ্য অথবা মেয়াদ শেষ!</p>
         </div>
+    </div>
 
-        <!-- ২. লিস্ট এরিয়া -->
-        <div id="list-box" class="flex flex-col bg-[#111]">
-            <!-- মেনু -->
-            <div class="flex gap-2 p-2 bg-[#000] border-b border-[#222] overflow-x-auto">
-                <button onclick="App.load('bd')" class="bg-slate-800 text-gray-300 px-3 py-1 rounded text-xs font-bold whitespace-nowrap focus:bg-yellow-500 focus:text-black outline-none">Bangla</button>
-                <button onclick="App.load('sports')" class="bg-slate-800 text-gray-300 px-3 py-1 rounded text-xs font-bold whitespace-nowrap focus:bg-yellow-500 focus:text-black outline-none">Sports</button>
-                <button onclick="App.load('kids')" class="bg-slate-800 text-gray-300 px-3 py-1 rounded text-xs font-bold whitespace-nowrap focus:bg-yellow-500 focus:text-black outline-none">Kids</button>
-                <button onclick="App.load('in')" class="bg-slate-800 text-gray-300 px-3 py-1 rounded text-xs font-bold whitespace-nowrap focus:bg-yellow-500 focus:text-black outline-none">India</button>
+    <!-- ২. মূল অ্যাপ ইন্টারফেস (Main App) -->
+    <div id="app-interface" class="flex flex-col h-full hidden">
+        
+        <!-- হেডার -->
+        <header class="bg-slate-900 border-b border-slate-800 p-3 flex justify-between items-center shadow-lg z-20">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-satellite-dish text-yellow-400 text-2xl"></i>
+                <h1 class="font-bold text-lg tracking-wide text-white">SMART TV <span class="text-xs text-blue-400">BD & IN</span></h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="user-badge" class="text-xs bg-slate-800 text-green-400 px-2 py-1 rounded border border-slate-700">User</span>
+                <button id="logout-btn" class="bg-red-600 text-white text-xs font-bold px-3 py-1 rounded focusable">
+                    LOGOUT
+                </button>
+            </div>
+        </header>
+
+        <!-- মেইন লেআউট (টিভি ও মোবাইলের জন্য আলাদা ফ্লেক্স ডিরেকশন) -->
+        <div class="flex flex-1 overflow-hidden flex-col lg:flex-row">
+            
+            <!-- ভিডিও প্লেয়ার সেকশন -->
+            <div class="w-full lg:w-2/3 bg-black flex flex-col relative group order-1 lg:order-2">
+                <div id="player-container" class="w-full h-full aspect-video lg:aspect-auto relative bg-black">
+                    <video id="video" class="w-full h-full object-contain" controls crossorigin="anonymous"></video>
+                    
+                    <!-- লোডিং স্পিনার -->
+                    <div id="loader" class="absolute inset-0 flex items-center justify-center bg-black z-10 hidden">
+                        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
+                    </div>
+                </div>
+                
+                <!-- চ্যানেল ইনফো -->
+                <div class="p-3 bg-slate-900 border-t border-slate-800">
+                    <h2 id="current-channel" class="text-lg font-bold text-yellow-400 truncate">Select a Channel</h2>
+                    <div class="flex items-center gap-2 text-sm text-slate-400">
+                        <span id="current-country" class="px-2 py-0.5 bg-slate-700 rounded text-xs text-white">Country</span>
+                        <span id="current-category">Category</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- লিস্ট -->
-            <div id="grid" class="flex-1 overflow-y-auto p-2 grid grid-cols-3 sm:grid-cols-2 gap-2 content-start">
-                <!-- লোড হবে -->
+            <!-- সাইডবার: ক্যাটাগরি ও চ্যানেল লিস্ট -->
+            <div class="w-full lg:w-1/3 bg-slate-900 flex flex-col min-h-0 border-r border-slate-800 order-2 lg:order-1">
+                
+                <!-- কান্ট্রি ফিল্টার ট্যাব -->
+                <div class="flex p-2 gap-2 bg-slate-900 border-b border-slate-800">
+                    <button onclick="filterByCountry('All')" class="country-btn flex-1 bg-blue-600 text-white py-2 rounded text-sm font-bold focusable" data-c="All">All</button>
+                    <button onclick="filterByCountry('BD')" class="country-btn flex-1 bg-slate-800 text-slate-300 py-2 rounded text-sm font-bold focusable" data-c="BD">BD 🇧🇩</button>
+                    <button onclick="filterByCountry('IN')" class="country-btn flex-1 bg-slate-800 text-slate-300 py-2 rounded text-sm font-bold focusable" data-c="IN">IN 🇮🇳</button>
+                </div>
+
+                <!-- ক্যাটাগরি লিস্ট -->
+                <div class="p-2 overflow-x-auto whitespace-nowrap no-scrollbar border-b border-slate-800" id="category-list">
+                    <!-- Categories will load here -->
+                </div>
+
+                <!-- চ্যানেল লিস্ট -->
+                <div class="flex-1 overflow-y-auto p-2 grid grid-cols-1 gap-2 content-start no-scrollbar" id="channel-list">
+                    <!-- Channels will load here -->
+                    <div class="text-center text-slate-500 mt-10">Loading Channels...</div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        const App = {
-            hls: null,
-            // নতুন শক্তিশালী প্রোক্সি ব্যবহার করছি
-            proxy: 'https://api.codetabs.com/v1/proxy?quest=',
-            sources: {
-                bd: 'https://iptv-org.github.io/iptv/countries/bd.m3u',
-                sports: 'https://iptv-org.github.io/iptv/categories/sports.m3u',
-                kids: 'https://iptv-org.github.io/iptv/languages/hin.m3u',
-                in: 'https://iptv-org.github.io/iptv/countries/in.m3u'
-            },
+        // ================= কনফিগারেশন =================
+        // আপনার গিটহাবের users.json এর RAW লিংকটি এখানে দিন
+        // আমি আপাতত ডেমো ডাটা ব্যবহার করছি, আপনি লিংকটি বসালে কোড আনকমেন্ট করবেন।
+        // const USERS_DB_URL = 'https://raw.githubusercontent.com/YOUR_USERNAME/REPO/main/users.json'; 
+        
+        // সোর্স ইউআরএল
+        const SOURCES = [
+            { url: 'https://iptv-org.github.io/iptv/countries/bd.m3u', country: 'BD' },
+            { url: 'https://iptv-org.github.io/iptv/countries/in.m3u', country: 'IN' }
+        ];
 
-            init() {
-                this.video = document.getElementById('video');
-                this.grid = document.getElementById('grid');
-                this.loader = document.getElementById('loader');
+        // ================= গ্লোবাল ভেরিয়েবল =================
+        let allChannels = [];
+        let displayedChannels = [];
+        let categories = new Set();
+        let currentCountryFilter = 'All';
+        let currentCategoryFilter = 'All';
+        let hls = null;
+
+        // ================= অথেন্টিকেশন সিস্টেম =================
+        const loginScreen = document.getElementById('login-screen');
+        const appInterface = document.getElementById('app-interface');
+        const loginBtn = document.getElementById('login-btn');
+        const loginError = document.getElementById('login-error');
+
+        function initAuth() {
+            const user = JSON.parse(localStorage.getItem('iptv_user'));
+            // চেক করি ইউজার আছে কিনা এবং মেয়াদ আছে কিনা (সিম্পল চেক)
+            if (user && user.status === 'active') {
+                showApp(user);
+            } else {
+                loginScreen.classList.remove('hidden');
+                document.getElementById('username').focus();
+            }
+        }
+
+        async function attemptLogin() {
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value.trim();
+            
+            loginBtn.innerText = 'যাচাই করা হচ্ছে...';
+            
+            try {
+                // এখানে আপনি fetch(USERS_DB_URL) ব্যবহার করবেন
+                // ডেমোর জন্য আমি লোকাল ডাটা ব্যবহার করছি
                 
-                // ডিফল্ট লোড
-                this.load('bd');
+                const mockUsers = [
+                    { username: "rafid", password: "123", status: "active" },
+                    { username: "test", password: "test", status: "active" }
+                ];
 
-                // টিভি রিমোট এন্টার কি ফিক্স
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && document.activeElement.classList.contains('card')) {
-                        document.activeElement.click();
-                    }
-                });
-            },
+                // রিয়েল লাইফে নিচের কোডটি ব্যবহার করবেন:
+                // const res = await fetch(USERS_DB_URL);
+                // const users = await res.json();
+                const users = mockUsers; // For demo
 
-            async load(type) {
-                this.loader.classList.remove('hidden');
-                this.grid.innerHTML = '<div class="col-span-full text-center mt-10 text-gray-500 text-xs">Connecting Server...</div>';
+                const foundUser = users.find(user => user.username === u && user.password === p);
 
-                try {
-                    // ক্যাশ বাস্টিং (যাতে প্রতিবার নতুন লিস্ট আসে)
-                    const url = this.sources[type] + '?t=' + Date.now();
-                    const res = await fetch(this.proxy + encodeURIComponent(url));
-                    
-                    if (!res.ok) throw new Error("Server Error");
-                    
-                    const text = await res.text();
-                    this.parse(text, type);
-                } catch(e) {
-                    console.log(e);
-                    this.grid.innerHTML = '<div class="col-span-full text-center text-red-400 text-xs p-5">List Load Failed.<br>Try Refreshing.</div>';
-                    this.loader.classList.add('hidden');
+                if (foundUser && foundUser.status === 'active') {
+                    localStorage.setItem('iptv_user', JSON.stringify(foundUser));
+                    showApp(foundUser);
+                } else {
+                    throw new Error('ভুল তথ্য অথবা মেয়াদ শেষ');
                 }
-            },
+            } catch (e) {
+                loginError.classList.remove('hidden');
+                loginBtn.innerText = 'প্রবেশ করুন';
+            }
+        }
 
-            parse(m3u, type) {
-                const lines = m3u.split('\n');
-                this.grid.innerHTML = '';
-                let item = {};
-                let count = 0;
+        function showApp(user) {
+            loginScreen.classList.add('hidden');
+            appInterface.classList.remove('hidden');
+            document.getElementById('user-badge').innerText = user.username;
+            loadAllPlaylists();
+        }
 
-                lines.forEach(line => {
-                    line = line.trim();
-                    if(line.startsWith('#EXTINF:')) {
-                        const parts = line.split(',');
-                        item.name = parts[parts.length-1];
-                        const logo = line.match(/tvg-logo="([^"]*)"/);
-                        item.logo = logo ? logo[1] : null;
-                        const grp = line.match(/group-title="([^"]*)"/);
-                        item.group = grp ? grp[1].toLowerCase() : '';
-                    } else if(line.startsWith('http')) {
-                        item.url = line;
-                        let add = true;
-                        
-                        // ফিল্টার
-                        if(type === 'kids' && !item.name.toLowerCase().includes('cartoon') && !item.group.includes('kid')) add = false;
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('iptv_user');
+            location.reload();
+        });
+        loginBtn.addEventListener('click', attemptLogin);
 
-                        // লিমিট ১০০ (টিভির জন্য সেফ জোন)
-                        if(add && count < 100) {
-                            this.renderCard(item);
-                            count++;
-                        }
-                        item = {};
-                    }
-                });
-                this.loader.classList.add('hidden');
-            },
-
-            renderCard(item) {
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.tabIndex = 0; // রিমোট ফোকাস
-                const logo = item.logo || `https://via.placeholder.com/50?text=${item.name.charAt(0)}`;
+        // ================= প্লেলিস্ট লোডিং লজিক =================
+        async function loadAllPlaylists() {
+            try {
+                // দুইটা সোর্স একসাথে ফেচ করা হচ্ছে
+                const promises = SOURCES.map(src => fetch(src.url).then(r => r.text()).then(data => ({ data, country: src.country })));
+                const results = await Promise.all(promises);
                 
-                div.innerHTML = `
-                    <img src="${logo}" onerror="this.src='https://via.placeholder.com/50'">
-                    <h3>${item.name}</h3>
-                `;
-
-                div.onclick = () => this.play(item.url, item.name);
-                this.grid.appendChild(div);
-            },
-
-            play(url, name) {
-                document.getElementById('channel-title').innerText = name;
-                this.loader.classList.remove('hidden');
-
-                // ১. সরাসরি প্লে (UC Browser / Mobile / TV Native)
-                this.video.src = url;
+                results.forEach(result => parseM3U(result.data, result.country));
                 
-                const playPromise = this.video.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        this.loader.classList.add('hidden');
-                    }).catch(error => {
-                        // ২. সরাসরি না চললে HLS.js (PC / Chrome)
-                        if(Hls.isSupported()) {
-                            if(this.hls) this.hls.destroy();
-                            this.hls = new Hls();
-                            this.hls.loadSource(url);
-                            this.hls.attachMedia(this.video);
-                            this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                                this.video.play();
-                                this.loader.classList.add('hidden');
-                            });
-                            this.hls.on(Hls.Events.ERROR, (e, data) => {
-                                if(data.fatal) this.loader.classList.add('hidden');
-                            });
-                        }
+                // ক্যাটাগরি তৈরি এবং চ্যানেল রেন্ডার
+                updateUI();
+                
+            } catch (e) {
+                console.error("প্লেলিস্ট লোড হতে সমস্যা হয়েছে:", e);
+            }
+        }
+
+        function parseM3U(data, countryCode) {
+            const lines = data.split('\n');
+            let currentInfo = {};
+
+            for (let line of lines) {
+                line = line.trim();
+                if (line.startsWith('#EXTINF:')) {
+                    const groupMatch = line.match(/group-title="([^"]*)"/);
+                    const logoMatch = line.match(/tvg-logo="([^"]*)"/);
+                    
+                    const group = groupMatch ? groupMatch[1] : 'Others';
+                    const logo = logoMatch ? logoMatch[1] : null;
+                    const name = line.split(',').pop().trim();
+
+                    currentInfo = { name, group, logo, country: countryCode };
+                } else if (line.startsWith('http')) {
+                    // ডুপ্লিকেট রিমুভ এবং লিস্টে অ্যাড করা
+                    allChannels.push({
+                        ...currentInfo,
+                        url: line
                     });
+                    categories.add(group);
                 }
             }
-        };
+        }
 
-        window.onload = () => App.init();
+        function updateUI() {
+            renderCategories();
+            filterChannels();
+        }
+
+        // ================= ফিল্টারিং লজিক =================
+        function filterByCountry(country) {
+            currentCountryFilter = country;
+            // বাটন কালার আপডেট
+            document.querySelectorAll('.country-btn').forEach(btn => {
+                if(btn.dataset.c === country) {
+                    btn.classList.replace('bg-slate-800', 'bg-blue-600');
+                    btn.classList.replace('text-slate-300', 'text-white');
+                } else {
+                    btn.classList.replace('bg-blue-600', 'bg-slate-800');
+                    btn.classList.replace('text-white', 'text-slate-300');
+                }
+            });
+            filterChannels();
+        }
+
+        function filterByCategory(cat) {
+            currentCategoryFilter = cat;
+            // ক্যাটাগরি বাটন হাইলাইট
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-yellow-500', 'text-black');
+                btn.classList.add('bg-slate-700', 'text-slate-300');
+                if(btn.innerText === cat) {
+                    btn.classList.remove('bg-slate-700', 'text-slate-300');
+                    btn.classList.add('bg-yellow-500', 'text-black');
+                }
+            });
+            filterChannels();
+        }
+
+        function filterChannels() {
+            const list = document.getElementById('channel-list');
+            list.innerHTML = '';
+
+            // ফিল্টারিং লজিক
+            let filtered = allChannels;
+            
+            if (currentCountryFilter !== 'All') {
+                filtered = filtered.filter(c => c.country === currentCountryFilter);
+            }
+            
+            // ক্যাটাগরি ফিল্টার করার আগে, বর্তমান কান্ট্রির ক্যাটাগরিগুলো রি-রেন্ডার করা উচিত (Advanced UX), 
+            // কিন্তু সহজে রাখার জন্য আমরা গ্লোবাল ক্যাটাগরি রাখছি।
+            
+            if (currentCategoryFilter !== 'All') {
+                filtered = filtered.filter(c => c.group === currentCategoryFilter);
+            }
+
+            // রেন্ডারিং
+            if(filtered.length === 0) {
+                list.innerHTML = '<div class="text-center text-slate-500 p-4">কোন চ্যানেল পাওয়া যায়নি</div>';
+                return;
+            }
+
+            filtered.forEach(ch => {
+                const el = document.createElement('div');
+                el.className = 'focusable bg-slate-800 p-3 rounded flex items-center gap-3 cursor-pointer hover:bg-slate-700 transition border border-transparent mb-1';
+                el.tabIndex = 0; 
+                
+                const img = ch.logo ? 
+                    `<img src="${ch.logo}" class="w-10 h-10 object-contain bg-black rounded p-1" onerror="this.src='https://via.placeholder.com/40?text=TV'">` : 
+                    `<div class="w-10 h-10 bg-slate-700 rounded flex items-center justify-center text-slate-500"><i class="fas fa-tv"></i></div>`;
+
+                el.innerHTML = `
+                    ${img}
+                    <div class="overflow-hidden">
+                        <h3 class="font-bold text-sm truncate text-white">${ch.name}</h3>
+                        <p class="text-xs text-slate-500 truncate flex items-center gap-2">
+                            <span class="bg-slate-900 px-1 rounded">${ch.country}</span> ${ch.group}
+                        </p>
+                    </div>
+                `;
+                
+                el.onclick = () => playChannel(ch);
+                el.onkeydown = (e) => { if(e.key === 'Enter') playChannel(ch); };
+
+                list.appendChild(el);
+            });
+        }
+
+        function renderCategories() {
+            const catContainer = document.getElementById('category-list');
+            catContainer.innerHTML = '';
+            
+            // "All" Button
+            const allBtn = createCatBtn('All', true);
+            catContainer.appendChild(allBtn);
+
+            Array.from(categories).sort().forEach(cat => {
+                catContainer.appendChild(createCatBtn(cat, false));
+            });
+        }
+
+        function createCatBtn(text, isActive) {
+            const btn = document.createElement('button');
+            btn.className = `cat-btn px-4 py-1 mr-2 rounded text-sm font-semibold transition focusable whitespace-nowrap ${isActive ? 'bg-yellow-500 text-black' : 'bg-slate-700 text-slate-300'}`;
+            btn.innerText = text;
+            btn.onclick = () => filterByCategory(text);
+            return btn;
+        }
+
+        // ================= ভিডিও প্লেয়ার =================
+        function playChannel(channel) {
+            const video = document.getElementById('video');
+            const loader = document.getElementById('loader');
+            
+            // UI আপডেট
+            document.getElementById('current-channel').innerText = channel.name;
+            document.getElementById('current-country').innerText = channel.country;
+            document.getElementById('current-category').innerText = channel.group;
+            
+            loader.classList.remove('hidden');
+
+            if (Hls.isSupported()) {
+                if(hls) hls.destroy();
+                hls = new Hls();
+                hls.loadSource(channel.url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    loader.classList.add('hidden');
+                    video.play();
+                });
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                         loader.classList.add('hidden');
+                         // এরর হ্যান্ডলিং (পুনরায় চেষ্টা বা মেসেজ)
+                    }
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = channel.url;
+                video.addEventListener('loadedmetadata', () => {
+                    loader.classList.add('hidden');
+                    video.play();
+                });
+            }
+        }
+
+        // ================= কি-বোর্ড নেভিগেশন (TV Remote) =================
+        document.addEventListener('keydown', (e) => {
+            const focusables = Array.from(document.querySelectorAll('.focusable'));
+            const index = focusables.indexOf(document.activeElement);
+            
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                const next = focusables[index + 1] || focusables[0];
+                if(next) next.focus();
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                const prev = focusables[index - 1] || focusables[focusables.length - 1];
+                if(prev) prev.focus();
+            }
+        });
+
+        // শুরু করা যাক
+        initAuth();
+
     </script>
 </body>
 </html>
-
 
